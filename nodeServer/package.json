@@ -1,0 +1,26 @@
+{
+  "name": "snake.city",
+  "version": "1.0.0",
+  "description": "Snake.City is a multi-player game",
+  "main": "webserver1.js",
+  "dependencies": {
+    "express": "^4.17.1",
+    "http": "0.0.1-security",
+    "socket.io": "^2.3.0"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "node webserver1.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "http://github.com"
+  },
+  "keywords": [
+    "outdoor",
+    "play;playable",
+    "city;coronavirus"
+  ],
+  "author": "Tomo, Guilia, Gavin Wood",
+  "license": "MIT"
+}

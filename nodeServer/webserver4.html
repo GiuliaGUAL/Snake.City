@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+
+<h1>Mouse events</h1>
+<canvas id="myCanvas" width="560" height="360"></canvas>
+
+<script src="/socket.io/socket.io.js"></script>
+
+<script>
+const myPics = document.getElementById('myCanvas');
+
+// The x and y offset of the canvas from the edge of the page
+const rect = myPics.getBoundingClientRect();
+
+const socket = io.connect('http://localhost');
+  socket.on('news', (data) =>
+  {
+    console.log("This client received some news: ");
+	console.log(data);
+  });
+
+// Add the event listeners for mousedown, mousemove, and mouseup
+myPics.addEventListener('mousedown', e => {
+	x = e.clientX - rect.left;
+	y = e.clientY - rect.top;
+	console.log("mouse down:" + x + " "+ y );
+
+	socket.emit('myevent', { hello: 'mousedown' });
+});
+
+myPics.addEventListener('mouseup', e => {
+	x = e.clientX - rect.left;
+	y = e.clientY - rect.top;
+	console.log("mouse up:" + x + " "+ y );
+
+	socket.emit('myevent', { hello: 'mouseup' });
+});
+
+</script>
+
+</html>
