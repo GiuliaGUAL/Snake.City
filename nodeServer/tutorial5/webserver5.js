@@ -33,6 +33,8 @@ io.on('connection', (socket) => {
 			})
 		}
 		
+// These are abitary stuff we can send to the webpage in real time
+		
 		// Send the list of snakes to the page
 		// Only one page currently responds to this
 		var fs = require('fs');
@@ -58,6 +60,9 @@ io.on('connection', (socket) => {
 
 		/// Get the list of games going on
 		readFiles( "games" );
+		
+// demonstrate with a counter		
+		socket.emit("counter", { mycounter: 11 })	
 	});
 });
 

@@ -3,10 +3,17 @@
 
 Page 0<br><br>
 
+<div id="counter">COUNTER WILL GO HERE</div>
+
 <a href="/page1.html">PLAY</a>
+
+<script src="/socket.io/socket.io.js"></script>
 
 <script>
 
+// ------------- Connects to the server
+// It's setup a socket between server and client
+// and it always knows who's who
 const socket = io.connect('http://localhost');
 
 var session_id;
@@ -21,10 +28,14 @@ socket.on("set-session-acknowledgement", function(data)
 {
 	sessionStorage.setItem('sessionId', data.sessionId);
 });
+//-----------------------------------------------------
+
 
 // Look at the receipt from the server
-socket.on("snake-list", function(data) {
-	console.log("Got a snake list" + data);
+socket.on("counter", function(data) {
+///	console.log(data);
+	var ele = document.getElementById('counter');
+	ele.innerHTML = data["mycounter"];
 });
  
 </script>
