@@ -12,6 +12,39 @@ let cnv;
 let d = 30;
 let g;
 
+buttonA = createButton('buttonA');
+buttonB = createButton('buttonB');
+
+buttonA.position(windowWidth/2, 50);
+buttonA.mouseReleased(triggerButtonA);
+buttonB.mouseReleased(releaseButtonA);
+buttonA.addClass('ButtonA');
+
+buttonB.position(windowWidth/2, 250);
+buttonB.mousePressed(triggerButtonB);
+buttonB.mouseReleased(releaseButtonB);
+buttonA.addClass('ButtonB');
+
+function triggerButtonA(){
+  console.log("A_Changed")
+  val = color(150,10,10);
+}
+
+function releaseButtonA(){
+  console.log("A_Released")
+  val = color(100,10,10);
+}
+
+function triggerButtonB(){
+  console.log("B_Pressed")
+  val = color(10,250,10);
+}
+
+function releaseButtonB(){
+  console.log("B_Released")
+  val = color(10,10,10);
+}
+
 //setup() is called initially
 function setup() {
   createCanvas(windowWidth, windowHeight);
