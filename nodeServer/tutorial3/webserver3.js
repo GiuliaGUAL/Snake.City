@@ -8,7 +8,7 @@ const port = process.env.PORT || 80
 server.listen(port);
 
 app.get('/', (req, res) => {
-  res.sendFile(__dirname + '/webserver4.html');
+  res.sendFile(__dirname + '/webpage.html');
 });
 
 io.on('connection', (socket) => {

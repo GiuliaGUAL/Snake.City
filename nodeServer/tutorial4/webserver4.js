@@ -13,18 +13,19 @@ app.get('/', (req, res) => {
 app.get('/page2.html', (req, res) => {
   //console.log("Req: " + req);
 
-  res.sendFile(__dirname + '/webserver5_page2.html');
+  res.sendFile(__dirname + '/page2.html');
 });
 
-io.on('connection', (socket) => {
-  
+io.on('connection', (socket) =>
+{  
   console.log("Server has a connection");
    
   // Send to the client
   socket.emit('news', { news: 'hello new client' });
   
   // Receive an event from the client
-  socket.on('myevent', (data) => {
+  socket.on('myevent', (data) =>
+  {
     console.log("This data was received by the server from the client:");
 	console.log(data);
   });
