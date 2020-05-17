@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+
+Intro Page!<br>
+
+<a href="/webserver6_page0.html">Page 0</a>
+
+<script src="/socket.io/socket.io.js"></script>
+
+<script>
+
+const socket = io.connect('http://localhost');
+
+var session_id;
+
+// Get saved data from sessionStorage
+// and send to server
+let data = sessionStorage.getItem('sessionId');
+session_id = data;
+socket.emit('start-session', {  sessionId: session_id });
+
+// Look at the receipt from the server
+socket.on("set-session-acknowledgement", function(data) {
+	sessionStorage.setItem('sessionId', data.sessionId);
+})
+ 
+</script>
+
+</html>
