@@ -7,10 +7,10 @@ server.listen(80);
 app.get('/', (req, res) => {
   //console.log("Req: " + req);
 
-  res.sendFile(__dirname + '/webserver5_page1.html');
+  res.sendFile(__dirname + '/page1.html');
 });
 
-app.get('/webserver5_page2.html', (req, res) => {
+app.get('/page2.html', (req, res) => {
   //console.log("Req: " + req);
 
   res.sendFile(__dirname + '/webserver5_page2.html');
