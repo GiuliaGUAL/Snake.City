@@ -11,7 +11,23 @@ body{
     /* position:fixed;  */
 }
 
-#debugText{
+#stateText{
+    position: absolute;
+    top: 30%;
+    left: 50%;
+    transform : translate(-50%, -50%);  
+}
+
+#instruction{
+    position: absolute;
+    width: 350px;
+    text-align: center;
+    top: 40%;
+    left: 50%;
+    transform : translate(-50%, -50%);  
+}
+
+#timer{
     position: absolute;
     top: 50%;
     left: 50%;
@@ -19,12 +35,14 @@ body{
 }
 
 
-#stateText{
+#debugText{
     position: absolute;
-    top: 30%;
+    top: 70%;
     left: 50%;
     transform : translate(-50%, -50%);  
 }
+
+
 
 .A-button{
     position: absolute;
@@ -46,6 +64,21 @@ body{
     transform : translate(-50%, 50%);  
     background-color: greenyellow;
     border-radius: 50%;
+}
+
+.rectangle{
+    position: absolute;
+    width: 300px;
+    height: 100%;
+    left: 50%;
+    transform : translate(-50%, 0%);  
+    background-color: darkgreen;
+    z-index: -1 ;
+    opacity: 0;
+}
+
+.visible{
+    opacity: 0.8;
 }
 
 .active {
