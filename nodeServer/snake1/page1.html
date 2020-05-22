@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+
+Page 1<br><br>
+
+Join a snake close to you<br><br>
+
+<div id="snake-names">SNAKES GO HERE</div>
+
+<a href="game.html">Game</a>
+
+<script src="/socket.io/socket.io.js"></script>
+
+<script>
+
+const socket = io.connect('http://localhost');
+
+var session_id;
+
+// Get saved data from sessionStorage and send to server
+let data = sessionStorage.getItem('sessionId');
+session_id = data;
+socket.emit('start-session', {  sessionId: session_id });
+
+// Look at the receipt from the server
+socket.on("set-session-acknowledgement", function(data)
+{
+	sessionStorage.setItem('sessionId', data.sessionId);
+});
+
+// Respond to a list of snakes from the server
+socket.on("snake-list", function(data) {
+	console.log("Got a snake list" + data);
+	var ele = document.getElementById('snake-names');
+	ele.innerHTML = data["names"];
+});
+ 
+</script>
+
+</html>

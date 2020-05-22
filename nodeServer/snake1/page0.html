@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+
+Page 0<br><br>
+
+<div id="counter">COUNTER WILL GO HERE</div>
+
+<a href="/page1.html">PLAY</a>
+
+<script src="/socket.io/socket.io.js"></script>
+
+<script>
+
+// ------------- Connects to the server
+// It's setup a socket between server and client
+// and it always knows who's who
+const socket = io.connect('http://localhost');
+
+var session_id;
+
+// Get saved data from sessionStorage and send to server
+let data = sessionStorage.getItem('sessionId');
+session_id = data;
+socket.emit('start-session', {  sessionId: session_id });
+
+// Look at the receipt from the server
+socket.on("set-session-acknowledgement", function(data)
+{
+	sessionStorage.setItem('sessionId', data.sessionId);
+});
+//-----------------------------------------------------
+
+
+// Look at the receipt from the server
+socket.on("counter", function(data) {
+///	console.log(data);
+	var ele = document.getElementById('counter');
+	ele.innerHTML = data["mycounter"];
+});
+ 
+</script>
+
+</html>
