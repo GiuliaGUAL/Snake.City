@@ -4,7 +4,8 @@ const server = require('http').Server(app);
 const io = require('socket.io')(server);
 const { uuid } = require('uuidv4');
 
-var stateCount = 0;
+var hbeat = new Array();
+var whosPlaying = new Array();
 
 server.listen(80);
 
@@ -15,9 +16,7 @@ io.on('connection', (socket) => {
 	//setTimeout(() => socket.disconnect(true), 5000);
 
 	socket.on('start-session', function(data)
-	{
-		stateCount = 0;
-		
+	{		
 		// Setup the session
 		// This happens when the page is being load
 		if (data.sessionId == null)
@@ -27,8 +26,15 @@ io.on('connection', (socket) => {
 			socket.join(socket.room, function(res)
 			{
 				console.log("Client connected")
-				socket.emit("set-session-acknowledgement", { sessionId: session_id })
+				socket.emit("set-session-acknowledgement", { sessionId: session_id })		
 			});
+			
+			// Add them to a list of whos playing
+			const index = whosPlaying.indexOf(socket.id);
+			if (index == -1) {
+				whosPlaying.push(socket);
+				console.log( "Num playing: " + whosPlaying.length );
+			}				
 		}
 		else
 		{
@@ -37,59 +43,73 @@ io.on('connection', (socket) => {
 			{
 				console.log("Client joined a session")
 				socket.emit("set-session-acknowledgement", { sessionId: data.sessionId })
+				console.log( "Num playing: " + whosPlaying.length );
 			})
 		}
-		
-// These are abitary stuff we can send to the webpage in real time
-		
-		// Send the list of snakes to the page
-		// Only one page currently responds to this
-		var fs = require('fs');
+    });
 
-		function readFiles(dirname) {
-		  fs.readdir(dirname, function(err, filenames) {
-			if (err) {
-			  console.log(err);
-			  return;
+// Disconnect code. If we want to check that we have a client continually connected
+// We need to keep pinging this server and then set up code to disconnect if we don't receive that ping
+	socket.on('heartbeat', function()
+	{
+		//console.log('Heartbeat received');
+		hbeat[socket.id] = Date.now();
+		setTimeout(function()
+		{
+			var now = Date.now();
+			if (now - hbeat[socket.id] > 5000)
+			{
+				try
+				{
+					console.log('Looking for client:' + socket.id);
+					// client is not responding
+					// we can't force a disconnect yet - but we can remove them from the game
+					// remove them from the list of whos playing
+					const index = whosPlaying.indexOf(socket);
+					if (index > -1)
+					{
+						whosPlaying.splice(index, 1);
+						console.log( "Num playing: " + whosPlaying.length + " after removing " + socket.id );				  
+					}
+				}
+				catch (error)
+				{
+					console.log(error)
+				}
 			}
-			
-			var snakes = "";
-			
-			filenames.forEach(function(filename) {
-				var snakeName = filename.slice(0, -4);
-				snakes = snakes + snakeName;
-				//console.log(snakeName);
-			});
-			
-			socket.emit("snake-list", { names: snakes })		
-		  });
-		}
-
-		/// Get the list of games going on
-		readFiles( "games" );
+			now = null;
+		}, 6000);
+	});
 		
-// demonstrate with a counter		
-		socket.emit("counter", { mycounter: 11 })	
+// demonstrate more arbitary stuff with a counter		
+		//socket.emit("counter", { mycounter: 11 })	
 
 // respond to game start		
-		socket.on('currentState', (data) => {
-			++stateCount;
-			console.log("stateCount:" + stateCount);
+	socket.on('currentState', (data) =>
+	{		
+		if( data['currentState'] == 'paused' )
+		{
 			console.log("currentState");
 			console.log(data);
-		});
-	});
-});
 
-// Handling disconnect
-// https://stackoverflow.com/questions/17287330/socket-io-handling-disconnect-event
-io.on('disconnect', (socket) => { 
-	console.log("Client disconnected")
+			// Look to see if there is a disconnect - if there is
+			// then set the state on all the other players
+			whosPlaying.forEach(myFunction);
+			function myFunction(item)
+			{
+				if( item != socket )
+				{
+					console.log("Telling other players someone disconnected");
+					item.emit("currentState", data)
+				}
+			}
+		}
+	});
 });
 
 app.get('/', (req, res) =>
 {
-	res.sendFile(__dirname + '/intro.html');
+	res.sendFile(__dirname + '/game.html');
 });
 
 app.get('/page0.html', (req, res) =>

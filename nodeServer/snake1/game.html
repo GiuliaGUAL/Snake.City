@@ -17,8 +17,8 @@
 
 	const socket = io.connect('http://localhost');
 
+	// Connect the session
 	var session_id;
-
 	// Get saved data from sessionStorage and send to server
 	let data = sessionStorage.getItem('sessionId');
 	session_id = data;
@@ -29,7 +29,14 @@
 	{
 		sessionStorage.setItem('sessionId', data.sessionId);
 	});
-	 
+	
+	// Send a heartbeat every 5 seconds - but also send one straight away - so if the client disconnects
+	// within the first 5 seconds - we know
+	socket.emit('heartbeat', { heartbeat: "hello" });
+	setInterval(function() {	
+		socket.emit('heartbeat', { heartbeat: "hello" });
+	}, 5000);
+		 
 	</script>
 	
     <script src="game.js" defer></script>

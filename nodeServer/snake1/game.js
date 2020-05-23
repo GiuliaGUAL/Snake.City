@@ -130,13 +130,11 @@ function stateManage() {
             currentSTATE = STATE.CONNECTED;
         }
         else {
-            currentSTATE = STATE.PAUSED;
 
+            currentSTATE = STATE.PAUSED;
+			socket.emit("currentState", { currentState: currentSTATE });
         }
     }
-
-	console.log("sending currentState");
-	socket.emit("currentState", { currentState: currentSTATE });
 
     //Calls rendergame which deals with how the screen display is handled
     renderGame(currentSTATE);
