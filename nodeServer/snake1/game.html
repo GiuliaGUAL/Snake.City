@@ -30,12 +30,12 @@
 		sessionStorage.setItem('sessionId', data.sessionId);
 	});
 	
-	// Send a heartbeat every 5 seconds - but also send one straight away - so if the client disconnects
-	// within the first 5 seconds - we know
+	// Send a heartbeat every 3 seconds - but also send one straight away - so if the client disconnects
+	// within the first 3 seconds - we know
 	socket.emit('heartbeat', { heartbeat: "hello" });
 	setInterval(function() {	
 		socket.emit('heartbeat', { heartbeat: "hello" });
-	}, 5000);
+	}, 3000); // milliseconds = 5 seconds = 5000 milliseconds
 		 
 	</script>
 	

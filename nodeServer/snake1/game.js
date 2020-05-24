@@ -132,7 +132,9 @@ function stateManage() {
         else {
 
             currentSTATE = STATE.PAUSED;
-			socket.emit("currentState", { currentState: currentSTATE });
+			
+			// Send to the server here - so the server knows what each phone has done
+			socket.emit("snakeEvents", { currentState: currentSTATE });
         }
     }
 
@@ -140,9 +142,22 @@ function stateManage() {
     renderGame(currentSTATE);
 }
 
-// Respond to someone disconnecting
-socket.on("currentState", function(data) {
+socket.on("peopleInfo", function(data) {
+	
+	console.log("People info: " + data["numPlaying"] );
+});
+
+// key pair value
+// var myKeyPair = { currentState: "Hello My" };
+// console.log ("Printed key pair " + myKeyPair["snakeEvents"];
+// socket.emit("alerts", myKeyPair);
+
+// Respond to someone disconnecting - on a different phone
+// This comes from the server - and then we tell the html that the state has changed to whatever [here paused]
+socket.on("snakeEvents", function(data) {
 	console.log("Someone disconnected" + data);
+	
+	// At the moment I've forced the state to paused - but technically - it would be set to = data
 	currentSTATE = STATE.PAUSED;
 	
     // Now call the render function to update whats happened
