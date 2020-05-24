@@ -27,14 +27,14 @@
 	// Look at the receipt from the server
 	socket.on("set-session-acknowledgement", function(data)
 	{
+		console.log( "Received session id " + data.sessionId);
 		sessionStorage.setItem('sessionId', data.sessionId);
 	});
 	
 	// Send a heartbeat every 3 seconds - but also send one straight away - so if the client disconnects
 	// within the first 3 seconds - we know
-	socket.emit('heartbeat', { heartbeat: "hello" });
 	setInterval(function() {	
-		socket.emit('heartbeat', { heartbeat: "hello" });
+		socket.emit('heartbeat', { message: "hello" });
 	}, 3000); // milliseconds = 5 seconds = 5000 milliseconds
 		 
 	</script>

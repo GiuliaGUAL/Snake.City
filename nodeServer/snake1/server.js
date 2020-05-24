@@ -9,12 +9,11 @@ var whosPlaying = new Array();
 
 server.listen(80);
 
+
 // This deals with the client connecting to this server
 // In response we give it a session id
 io.on('connection', (socket) => { 
 	
-	//setTimeout(() => socket.disconnect(true), 5000);
-
 	// This handles someone closing their browser and refresh pages
 	// If I refresh page this code lets me keep the same socket address and information
 	socket.on('start-session', function(data)
@@ -26,16 +25,9 @@ io.on('connection', (socket) => {
 			socket.room = session_id;
 			socket.join(socket.room, function(res)
 			{
-				console.log("Client connected on socket id: " + socket.id)
-				socket.emit("set-session-acknowledgement", { sessionId: session_id })		
-			});
-			
-			// Add them to a list of whos playing
-			const index = whosPlaying.indexOf(socket.id);
-			if (index == -1) {
-				whosPlaying.push(socket);											// List of players called whosplaying - to make this useful for the game
-				console.log( "Num playing: " + whosPlaying.length );
-			}				
+				console.log("Socket id " + socket.id + " associated with session " + session_id);
+				socket.emit("set-session-acknowledgement", { sessionId: session_id });
+			});	
 		}
 		else
 		{
@@ -43,47 +35,55 @@ io.on('connection', (socket) => {
 			socket.room = data.sessionId;  //this time using the same session 
 			socket.join(socket.room, function(res)
 			{
-				console.log("Client joined a session")
-				socket.emit("set-session-acknowledgement", { sessionId: data.sessionId })
+				console.log("Socket id " + socket.id + " associated with session " + data.sessionId);
+				socket.emit("set-session-acknowledgement", { sessionId: data.sessionId });
 				console.log( "Num playing: " + whosPlaying.length );
 			})
 		}
-		
+						
+		// Maintain a list of whosPlaying
+		const index = whosPlaying.indexOf(socket.id);
+		if (index == -1)
+		{
+			whosPlaying.push(socket);											// List of players called whosplaying - to make this useful for the game
+			console.log( "Num playing: " + whosPlaying.length );
+		}	
+			
 		socket.emit("peopleInfo", { numPlaying: whosPlaying.length});
     });
+	
+	// Check who's left the playing list every so often - here every - 5s
+	var myVar = setInterval(myTimer, 5000);
 
-// Disconnect code. If we want to check that we have a client continually connected
-// We need to keep pinging this server and then set up code to disconnect if we don't receive that ping
-	socket.on('heartbeat', function()
+	function myTimer()
 	{
-		//console.log('Heartbeat received');
-		hbeat[socket.id] = Date.now();
-		setTimeout(function()
+		// Loop through all the players that are connected
+		whosPlaying.forEach(myFunction); // this calls myfunction
+		
+		// As we loop it uses this function
+		function myFunction(playersSocket)
 		{
+			// console.log( "Checking activity of " + playersSocket.id + " of " + whosPlaying.length + " players" );
+			
+			// Ignore anyone who has been away for more than 6 seconds
 			var now = Date.now();
 			if (now - hbeat[socket.id] > 6000) // 6 seconds
 			{
-				try
+				const index = whosPlaying.indexOf(socket);
+				if (index > -1)
 				{
-					// client is not responding
-					// we can't force a disconnect yet - but we can remove them from the game
-					// remove them from the list of whos playing
-					const index = whosPlaying.indexOf(socket);
-					if (index > -1)
-					{
-						whosPlaying.splice(index, 1);
-						console.log( "Num playing: " + whosPlaying.length + " after removing " + socket.id );				  
-					}
-					
-					socket.emit("peopleInfo", { numPlaying: whosPlaying.length});
-				}
-				catch (error)
-				{
-					console.log(error)
-				}
+					whosPlaying.splice(index, 1);
+					console.log( "Num playing: " + whosPlaying.length + " after removing " + socket.id );				  
+				}	
 			}
-			now = null;
-		}, 6000);
+		}
+	}
+
+	// respond to a timeout
+	socket.on('heartbeat', (data) =>
+	{
+		// Update the last time we heard from someone
+		hbeat[socket.id] = Date.now();
 	});
 
 // respond to the current state coming in	
