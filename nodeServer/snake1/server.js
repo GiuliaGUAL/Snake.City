@@ -25,7 +25,7 @@ io.on('connection', (socket) => {
 			socket.room = session_id;
 			socket.join(socket.room, function(res)
 			{
-				console.log("Socket id " + socket.id + " associated with session " + session_id);
+				console.log("Socket id " + socket.id + " joined");
 				socket.emit("set-session-acknowledgement", { sessionId: session_id });
 			});	
 		}
@@ -35,7 +35,7 @@ io.on('connection', (socket) => {
 			socket.room = data.sessionId;  //this time using the same session 
 			socket.join(socket.room, function(res)
 			{
-				console.log("Socket id " + socket.id + " associated with session " + data.sessionId);
+				console.log("Socket id " + socket.id + " rejoined");
 				socket.emit("set-session-acknowledgement", { sessionId: data.sessionId });
 				console.log( "Num playing: " + whosPlaying.length );
 			})
@@ -79,7 +79,7 @@ io.on('connection', (socket) => {
 		}
 	}
 
-	// respond to a timeout
+	// respond to a heartbeat by setting a new time for when we last heard from them
 	socket.on('heartbeat', (data) =>
 	{
 		// Update the last time we heard from someone
