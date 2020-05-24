@@ -144,6 +144,9 @@ function stateManage() {
 socket.on("currentState", function(data) {
 	console.log("Someone disconnected" + data);
 	currentSTATE = STATE.PAUSED;
+	
+    // Now call the render function to update whats happened
+    renderGame(currentSTATE);
 });
 
 function renderGame(state) {

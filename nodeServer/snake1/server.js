@@ -25,7 +25,7 @@ io.on('connection', (socket) => {
 			socket.room = session_id;
 			socket.join(socket.room, function(res)
 			{
-				console.log("Client connected")
+				console.log("Client connected on socket id: " + socket.id)
 				socket.emit("set-session-acknowledgement", { sessionId: session_id })		
 			});
 			
@@ -61,7 +61,6 @@ io.on('connection', (socket) => {
 			{
 				try
 				{
-					console.log('Looking for client:' + socket.id);
 					// client is not responding
 					// we can't force a disconnect yet - but we can remove them from the game
 					// remove them from the list of whos playing
@@ -95,12 +94,13 @@ io.on('connection', (socket) => {
 			// Look to see if there is a disconnect - if there is
 			// then set the state on all the other players
 			whosPlaying.forEach(myFunction);
-			function myFunction(item)
+			function myFunction(playersSocket)
 			{
-				if( item != socket )
+				if( playersSocket != socket )
 				{
-					console.log("Telling other players someone disconnected");
-					item.emit("currentState", data)
+					// Send out on playerssocket - not socket (because thats the player that let go)
+					console.log("Telling other player " + playersSocket.id + " someone let go of their phone");
+					playersSocket.emit("currentState", data)
 				}
 			}
 		}
