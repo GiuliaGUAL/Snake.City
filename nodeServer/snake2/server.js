@@ -5,10 +5,31 @@ const io = require('socket.io')(server);
 const { uuid } = require('uuidv4');
 
 var hbeat = new Array();
-var whosPlaying = new Array();
+var whosPlaying = {};
 
 server.listen(80);
 
+// GetNumPlayers
+// Gets how many players are joined
+function GetNumPlayers()
+{
+	return Object.keys(whosPlaying).length;
+}
+
+// AddPlayer
+// Maintain a list of whosPlaying
+function AddPlayer( socket )
+{					
+	const index = Object.values(whosPlaying).indexOf(socket.id);
+	if (index == -1)
+	{
+		whosPlaying[socket.id] = { state : "null" };
+		
+		console.log( "Num playing game: " + GetNumPlayers() );
+	}	
+		
+	socket.emit("peopleInfo", { numPlaying: GetNumPlayers() });	
+}
 
 // This deals with the client connecting to this server
 // In response we give it a session id
@@ -27,6 +48,7 @@ io.on('connection', (socket) => {
 			{
 				console.log("Socket id " + socket.id + " joined");
 				socket.emit("set-session-acknowledgement", { sessionId: session_id });
+				AddPlayer( socket );
 			});	
 		}
 		else
@@ -37,19 +59,9 @@ io.on('connection', (socket) => {
 			{
 				console.log("Socket id " + socket.id + " rejoined");
 				socket.emit("set-session-acknowledgement", { sessionId: data.sessionId });
-				console.log( "Num playing: " + whosPlaying.length );
+				AddPlayer( socket );
 			})
 		}
-						
-		// Maintain a list of whosPlaying
-		const index = whosPlaying.indexOf(socket.id);
-		if (index == -1)
-		{
-			whosPlaying.push(socket);											// List of players called whosplaying - to make this useful for the game
-			console.log( "Num playing: " + whosPlaying.length );
-		}	
-			
-		socket.emit("peopleInfo", { numPlaying: whosPlaying.length});
     });
 	
 	// Check who's left the playing list every so often - here every - 5s
@@ -58,23 +70,16 @@ io.on('connection', (socket) => {
 	function myTimer()
 	{
 		// Loop through all the players that are connected
-		whosPlaying.forEach(myFunction); // this calls myfunction
-		
-		// As we loop it uses this function
-		function myFunction(playersSocket)
+		for (let [key, value] of Object.entries(whosPlaying))
 		{
-			// console.log( "Checking activity of " + playersSocket.id + " of " + whosPlaying.length + " players" );
+			//console.log( "Checking activity of " + key + " of " + GetNumPlayers() + " players" );
 			
 			// Ignore anyone who has been away for more than 6 seconds
 			var now = Date.now();
-			if (now - hbeat[socket.id] > 6000) // 6 seconds
+			if (now - hbeat[key] > 4000) // 4 seconds
 			{
-				const index = whosPlaying.indexOf(socket);
-				if (index > -1)
-				{
-					whosPlaying.splice(index, 1);
-					console.log( "Num playing: " + whosPlaying.length + " after removing " + socket.id );				  
-				}	
+				delete whosPlaying[key];
+				console.log( "Num playing: " + GetNumPlayers() + " after removing " + socket.id );				  
 			}
 		}
 	}
@@ -82,36 +87,37 @@ io.on('connection', (socket) => {
 	// respond to a heartbeat by setting a new time for when we last heard from them
 	socket.on('heartbeat', (data) =>
 	{
+		//console.log( "Heartbeat: " + socket.id );
+		
 		// Update the last time we heard from someone
 		hbeat[socket.id] = Date.now();
 	});
 
 // respond to the current state coming in	
 	socket.on('snakeEvents', (data) =>
-	{		
-	// At the moment we will only respond to Paused on the server
-	// but really we need all of them in some form
-		if( data['currentState'] == 'paused' ) // that access the keypair by what we are looking for - which is "currentState"
+	{	
+		// Update the value directly with the state
+		whosPlaying[socket.id] = data;		
+	
+		// Update the value
+		var everyoneWaiting = true;
+		
+		for (let [key, value] of Object.entries(whosPlaying))
 		{
-			console.log("currentState");
-			console.log(data);
-
-			// Loop through all the players that are connected
-			whosPlaying.forEach(myFunction); // this calls myfunction
+			console.log( "Status: " + value['currentState'] );
 			
-			// As we loop it uses this function
-			function myFunction(playersSocket)
+			if( value['currentState'] != "waiting" )
 			{
-				// This stops us telling ourselves that we have changed
-				if( playersSocket != socket )
-				{
-					// Send out on playerssocket - not socket (because thats the player that let go)
-					console.log("Telling other player " + playersSocket.id + " someone let go of their phone");
-					
-					// Send to all the other players in the game our keypair variable called 'data'
-					playersSocket.emit("snakeEvents", data);
-				}
+				everyoneWaiting = false;
 			}
+		}
+		
+		if( everyoneWaiting )
+		{
+			let data = { currentState : "connected" };
+			
+			// Send to all the other players in the game our keypair variable called 'data'
+			socket.emit("snakeEvents", data);
 		}
 	});
 });

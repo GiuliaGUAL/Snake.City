@@ -2,6 +2,7 @@
 const STATE = {
     'INITIATE': 'initiated',
     'START': 'started',
+	'WAIT': 'waiting',
     'CONNECTED': 'connected',
     'PAUSED': 'paused',
     'FINISHED': 'finished',
@@ -17,9 +18,6 @@ const BUTTON = {
 //This states below might be useful in sending via socket io
 let currentSTATE = STATE.INITIATE;
 let currentBUTTON = BUTTON.NONE;
-
-//returns if the user has connected or not
-let has_connected = false;
 
 //for getting button pressed state
 let A_pressed = false;
@@ -97,7 +95,6 @@ function buttonStateUpdate() {
         currentBUTTON = BUTTON.BOTH;
         buttonA.classList.add("active");
         buttonB.classList.add("active");
-        has_connected = true;
     }
     else if (A_pressed && !B_pressed) {
         currentBUTTON = BUTTON.A;
@@ -114,30 +111,25 @@ function buttonStateUpdate() {
 }
 
 function stateManage() {
-    //Changes state based on if the two screens have has_connected or not.
-    if (!has_connected) {
-        if (currentBUTTON == BUTTON.A || currentBUTTON == BUTTON.B) {
 
-            currentSTATE = STATE.START;
-        }
-        else {
-            currentSTATE = STATE.INITIATE;
-        }
-    }
+	var lastSTATE = currentSTATE;
 
-    if (has_connected) {
-        if (currentBUTTON === BUTTON.BOTH) {
-            currentSTATE = STATE.CONNECTED;
-        }
-        else {
-
-            currentSTATE = STATE.PAUSED;
+	if (currentBUTTON == BUTTON.A || currentBUTTON == BUTTON.B)
+	{
+		currentSTATE = STATE.START;
+	}
+	
+	if (currentBUTTON == BUTTON.BOTH)
+	{
+		currentSTATE = STATE.WAIT;
+	}
+	
+	if( lastSTATE != currentSTATE )
+	{
+		// Send to the server here - so the server knows what each phone has done
+		socket.emit("snakeEvents", { currentState: currentSTATE });			   
+	}
 			
-			// Send to the server here - so the server knows what each phone has done
-			socket.emit("snakeEvents", { currentState: currentSTATE });
-        }
-    }
-
     //Calls rendergame which deals with how the screen display is handled
     renderGame(currentSTATE);
 }
@@ -147,18 +139,10 @@ socket.on("peopleInfo", function(data) {
 	console.log("People info: " + data["numPlaying"] );
 });
 
-// key pair value
-// var myKeyPair = { currentState: "Hello My" };
-// console.log ("Printed key pair " + myKeyPair["snakeEvents"];
-// socket.emit("alerts", myKeyPair);
 
-// Respond to someone disconnecting - on a different phone
-// This comes from the server - and then we tell the html that the state has changed to whatever [here paused]
 socket.on("snakeEvents", function(data) {
-	console.log("Someone disconnected" + data);
 	
-	// At the moment I've forced the state to paused - but technically - it would be set to = data
-	currentSTATE = STATE.PAUSED;
+	console.log( data );
 	
     // Now call the render function to update whats happened
     renderGame(currentSTATE);
@@ -175,6 +159,11 @@ function renderGame(state) {
             instructionText.innerHTML = "Touch the other side!";
             break;
 
+        case STATE.WAIT:
+            instructionText.innerHTML = "Wait for others";
+            rectangle.classList.add("visible");
+            break;
+			
         case STATE.CONNECTED:
             instructionText.innerHTML = "Hold it!!";
             rectangle.classList.add("visible");
@@ -190,7 +179,5 @@ function renderGame(state) {
         default:
         // code block
     }
-
-
 }
 
