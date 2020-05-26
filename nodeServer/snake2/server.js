@@ -43,7 +43,7 @@ io.on('connection', (socket) => {
 		if (data.sessionId == null)
 		{
 			var session_id = uuid();
-			socket.room = session_id;
+			socket.room = "SINGLE_ROOM";
 			socket.join(socket.room, function(res)
 			{
 				console.log("Socket id " + socket.id + " joined");
@@ -54,7 +54,7 @@ io.on('connection', (socket) => {
 		else
 		{
 			// Subsequently, we go through this code
-			socket.room = data.sessionId;  //this time using the same session 
+			socket.room = "SINGLE_ROOM";
 			socket.join(socket.room, function(res)
 			{
 				console.log("Socket id " + socket.id + " rejoined");
@@ -96,28 +96,61 @@ io.on('connection', (socket) => {
 // respond to the current state coming in	
 	socket.on('snakeEvents', (data) =>
 	{	
+		console.log( "Snake event received: " + data['currentState'] );
+		
 		// Update the value directly with the state
 		whosPlaying[socket.id] = data;		
 	
-		// Update the value
-		var everyoneWaiting = true;
-		
-		for (let [key, value] of Object.entries(whosPlaying))
+		// Look to see if everyone's waiting to start
 		{
-			console.log( "Status: " + value['currentState'] );
+			var everyoneWaiting = true;
 			
-			if( value['currentState'] != "waiting" )
+			for (let [key, value] of Object.entries(whosPlaying))
 			{
-				everyoneWaiting = false;
+				//console.log( "Status: " + value['currentState'] );
+				
+				if( value['currentState'] != "waiting" )
+				{
+					everyoneWaiting = false;
+				}
+			}
+			
+			if( everyoneWaiting )
+			{
+				console.log( "Sending start to everyone" );
+				
+				let data = { currentState : "connected" };
+				
+				// Send to all the other players in the game our keypair variable called 'data'
+				socket.broadcast.to("SINGLE_ROOM").emit("snakeEvents", data);
+				
+				// Ad us
+				socket.emit("snakeEvents", data);
 			}
 		}
 		
-		if( everyoneWaiting )
+		// Look to see if anyone has paused
 		{
-			let data = { currentState : "connected" };
+			var anyonePaused = false;
 			
-			// Send to all the other players in the game our keypair variable called 'data'
-			socket.emit("snakeEvents", data);
+			for (let [key, value] of Object.entries(whosPlaying))
+			{
+				//console.log( "Status: " + value['currentState'] );				
+				if( value['currentState'] == "paused" )
+				{
+					anyonePaused = true;
+				}
+			}
+			
+			if( anyonePaused )
+			{
+				console.log( "Sending pause to everyone" );
+				
+				let data = { currentState : "paused" };
+				
+				// Send to all the other players in the game our keypair variable called 'data'
+				socket.broadcast.to("SINGLE_ROOM").emit("snakeEvents", data);
+			}
 		}
 	});
 });

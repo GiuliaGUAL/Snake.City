@@ -110,18 +110,43 @@ function buttonStateUpdate() {
     stateManage();
 }
 
-function stateManage() {
+function stateManage()
+{
 
 	var lastSTATE = currentSTATE;
 
-	if (currentBUTTON == BUTTON.A || currentBUTTON == BUTTON.B)
+    switch (currentSTATE)
 	{
-		currentSTATE = STATE.START;
-	}
 	
-	if (currentBUTTON == BUTTON.BOTH)
-	{
-		currentSTATE = STATE.WAIT;
+        case STATE.INITIATE:
+			{
+				if (currentBUTTON == BUTTON.A || currentBUTTON == BUTTON.B)
+				{
+					currentSTATE = STATE.START;
+				}
+			}
+			break;
+			
+        case STATE.START:			
+			if (currentBUTTON == BUTTON.BOTH)
+			{
+				currentSTATE = STATE.WAIT;
+			}
+			break;
+			
+		case STATE.WAIT:
+			// do nothing - this is triggered by the server
+			break;
+	
+		case STATE.CONNECTED:
+			if( currentSTATE == STATE.CONNECTED )
+			{
+				if (currentBUTTON == BUTTON.A || currentBUTTON == BUTTON.B)
+				{
+					currentSTATE = STATE.PAUSED;
+				}
+			}
+			break;
 	}
 	
 	if( lastSTATE != currentSTATE )
@@ -143,6 +168,8 @@ socket.on("peopleInfo", function(data) {
 socket.on("snakeEvents", function(data) {
 	
 	console.log( data );
+	
+	currentSTATE = data['currentState'];
 	
     // Now call the render function to update whats happened
     renderGame(currentSTATE);
