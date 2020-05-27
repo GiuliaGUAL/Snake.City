@@ -23,12 +23,15 @@ function AddPlayer( socket )
 	const index = Object.values(whosPlaying).indexOf(socket.id);
 	if (index == -1)
 	{
+
 		whosPlaying[socket.id] = { state : "null" };
-		
 		console.log( "Num playing game: " + GetNumPlayers() );
 	}	
-		
+
+    //Everytime, there is a new person, broadcast it
 	socket.emit("peopleInfo", { numPlaying: GetNumPlayers() });	
+	socket.broadcast.to("SINGLE_ROOM").emit("peopleInfo", { numPlaying: GetNumPlayers() });
+
 }
 
 // This deals with the client connecting to this server
@@ -46,7 +49,7 @@ io.on('connection', (socket) => {
 			socket.room = "SINGLE_ROOM";
 			socket.join(socket.room, function(res)
 			{
-				console.log("Socket id " + socket.id + " joined");
+				console.log("Socket id " + socket.id + " joined for the first time");
 				socket.emit("set-session-acknowledgement", { sessionId: session_id });
 				AddPlayer( socket );
 			});	
@@ -79,7 +82,12 @@ io.on('connection', (socket) => {
 			if (now - hbeat[key] > 4000) // 4 seconds
 			{
 				delete whosPlaying[key];
-				console.log( "Num playing: " + GetNumPlayers() + " after removing " + socket.id );				  
+				console.log( "Num playing: " + GetNumPlayers() + " after removing " + socket.id );
+				
+				//emit peopleInfo to update the decreased number
+				socket.broadcast.to("SINGLE_ROOM").emit("peopleInfo", { numPlaying: GetNumPlayers() });
+				//socket.emit("peopleInfo", { numPlaying: GetNumPlayers() });
+
 			}
 		}
 	}

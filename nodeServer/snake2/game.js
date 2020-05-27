@@ -28,6 +28,7 @@ const buttonB = document.getElementById("buttonB");
 const rectangle = document.getElementById("rectangle");
 const debugText = document.getElementById("debugText");
 const stateText = document.getElementById("stateText");
+const phoneNumText = document.getElementById("phoneNum");
 const instructionText = document.getElementById("instruction");
 
 //Importing stopwatch function stopwatch.js
@@ -39,6 +40,9 @@ document.addEventListener("DOMContentLoaded", startup);
 
 
 function startup() {
+    buttonA.style.backgroundColor = "#D3D3D3";
+    buttonB.style.backgroundColor = "#D3D3D3";
+
     buttonA.addEventListener("touchstart", touchStartA, false);
     buttonA.addEventListener("touchend", touchEndA, false);
     buttonA.addEventListener("touchcancel", touchEndA, false);
@@ -160,17 +164,20 @@ function stateManage()
 }
 
 socket.on("peopleInfo", function(data) {
-	
-	console.log("People info: " + data["numPlaying"] );
+    console.log("People info: " + data['numPlaying'] );
+
+    //Change colors based on the number of people.
+    let colorchange = data['numPlaying']*60;
+    buttonA.style.backgroundColor = `hsl(${colorchange},100%,50%)`;
+    buttonB.style.backgroundColor = `hsl(${colorchange},100%,50%)`;
+    rectangle.style.backgroundColor = `hsl(${colorchange},80%,50%)`;
+    phoneNum.innerHTML = "Phone:" + data['numPlaying'];
 });
 
 
 socket.on("snakeEvents", function(data) {
-	
 	console.log( data );
-	
 	currentSTATE = data['currentState'];
-	
     // Now call the render function to update whats happened
     renderGame(currentSTATE);
 });

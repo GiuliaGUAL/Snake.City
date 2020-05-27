@@ -27,9 +27,18 @@ body{
     transform : translate(-50%, -50%);  
 }
 
+
 #timer{
     position: absolute;
     top: 50%;
+    left: 50%;
+    transform : translate(-50%, -50%);  
+}
+
+
+#phoneNum{
+    position: absolute;
+    top: 60%;
     left: 50%;
     transform : translate(-50%, -50%);  
 }
@@ -51,7 +60,6 @@ body{
     top:0%;
     left: 50%;
     transform : translate(-50%, -50%);  
-    background-color: greenyellow;
     border-radius: 50%;
 }
 
@@ -62,7 +70,6 @@ body{
     bottom:0px;
     left: 50%;
     transform : translate(-50%, 50%);  
-    background-color: greenyellow;
     border-radius: 50%;
 }
 
