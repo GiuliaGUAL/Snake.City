@@ -18,20 +18,29 @@ function GetNumPlayers()
 
 // AddPlayer
 // Maintain a list of whosPlaying
-function AddPlayer( socket )
-{					
+function AddPlayer( socket, session_id )
+{	
+	// Remove any old session - because this will have a different socket	
+	for (let [key, value] of Object.entries(whosPlaying))
+	{
+		if( value['session_id'] == session_id )
+		{
+			console.log( "Deleted old session" );
+			delete whosPlaying[key];
+		}
+	}
+	
+	// Add the player against their socket with their session				
 	const index = Object.values(whosPlaying).indexOf(socket.id);
 	if (index == -1)
 	{
-
-		whosPlaying[socket.id] = { state : "null" };
+		whosPlaying[socket.id] = { session_id : session_id };
 		console.log( "Num playing game: " + GetNumPlayers() );
 	}	
 
     //Everytime, there is a new person, broadcast it
 	socket.emit("peopleInfo", { numPlaying: GetNumPlayers() });	
 	socket.broadcast.to("SINGLE_ROOM").emit("peopleInfo", { numPlaying: GetNumPlayers() });
-
 }
 
 // This deals with the client connecting to this server
@@ -51,7 +60,7 @@ io.on('connection', (socket) => {
 			{
 				console.log("Socket id " + socket.id + " joined for the first time");
 				socket.emit("set-session-acknowledgement", { sessionId: session_id });
-				AddPlayer( socket );
+				AddPlayer( socket, session_id );
 			});	
 		}
 		else
@@ -62,7 +71,7 @@ io.on('connection', (socket) => {
 			{
 				console.log("Socket id " + socket.id + " rejoined");
 				socket.emit("set-session-acknowledgement", { sessionId: data.sessionId });
-				AddPlayer( socket );
+				AddPlayer( socket, session_id );
 			})
 		}
     });
