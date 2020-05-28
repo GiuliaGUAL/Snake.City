@@ -35,8 +35,14 @@ function AddPlayer( socket, session_id )
 	if (index == -1)
 	{
 		whosPlaying[socket.id] = { session_id : session_id };
-		console.log( "Num playing game: " + GetNumPlayers() );
-	}	
+	}
+	
+	// Display who's in each session
+	for (let [key, value] of Object.entries(whosPlaying))
+	{
+		console.log( "Session: " + value['session_id'] );
+	}
+	console.log( "Num playing game: " + GetNumPlayers() );
 
     //Everytime, there is a new person, broadcast it
 	socket.emit("peopleInfo", { numPlaying: GetNumPlayers() });	
@@ -88,8 +94,10 @@ io.on('connection', (socket) => {
 			
 			// Ignore anyone who has been away for more than 6 seconds
 			var now = Date.now();
-			if (now - hbeat[key] > 4000) // 4 seconds
+			if (now - hbeat[key] > 7000) // 7 seconds
 			{
+				console.log( "Not heard heatbeat - deleting player" );
+				
 				delete whosPlaying[key];
 				console.log( "Num playing: " + GetNumPlayers() + " after removing " + socket.id );
 				
@@ -176,7 +184,7 @@ io.on('connection', (socket) => {
 // But we also need the Javascript as well
 app.get('/', (req, res) =>
 {
-	res.sendFile(__dirname + '/game.html');
+	res.sendFile(__dirname + '/index.html');
 });
 
 app.get('/page0.html', (req, res) =>
