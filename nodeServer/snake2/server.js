@@ -79,7 +79,7 @@ io.on('connection', (socket) => {
     });
 	
 	// Check who's left the playing list every so often - here every - 5s
-	var myVar = setInterval(myTimer, 5000);
+	var myVar = setInterval(myTimer, 1000);
 
 	function myTimer()
 	{
