@@ -7,6 +7,7 @@ const { uuid } = require('uuidv4');
 var hbeat = new Array();
 var whosPlaying = {};
 
+console.log( "Running snake.city" );
 server.listen(80);
 
 // GetNumPlayers
@@ -25,7 +26,7 @@ function AddPlayer( socket, session_id )
 	{
 		if( value['session_id'] == session_id )
 		{
-			console.log( "Deleted old session" );
+			console.log( "Deleted old socket association" );
 			delete whosPlaying[key];
 		}
 	}
@@ -38,10 +39,6 @@ function AddPlayer( socket, session_id )
 	}
 	
 	// Display who's in each session
-	for (let [key, value] of Object.entries(whosPlaying))
-	{
-		console.log( "Session: " + value['session_id'] );
-	}
 	console.log( "Num playing game: " + GetNumPlayers() );
 
     //Everytime, there is a new person, broadcast it
@@ -53,33 +50,32 @@ function AddPlayer( socket, session_id )
 // In response we give it a session id
 io.on('connection', (socket) => { 
 	
+	console.log('connection');
+	
 	// This handles someone closing their browser and refresh pages
 	// If I refresh page this code lets me keep the same socket address and information
 	socket.on('start-session', function(data)
 	{		
+		console.log('start-session with session: ' + data.session_id );
+		
 		// This is what happens the first time
-		if (data.sessionId == null)
+		if ( data.session_id === null )
 		{
-			var session_id = uuid();
-			socket.room = "SINGLE_ROOM";
-			socket.join(socket.room, function(res)
-			{
-				console.log("Socket id " + socket.id + " joined for the first time");
-				socket.emit("set-session-acknowledgement", { sessionId: session_id });
-				AddPlayer( socket, session_id );
-			});	
+			data.session_id = uuid();
+			socket.emit("set-session-acknowledgement", { session_id: data.session_id });
+			
+			console.log( "Adding new player with session: " + data.session_id );			
 		}
 		else
 		{
-			// Subsequently, we go through this code
-			socket.room = "SINGLE_ROOM";
-			socket.join(socket.room, function(res)
-			{
-				console.log("Socket id " + socket.id + " rejoined");
-				socket.emit("set-session-acknowledgement", { sessionId: data.sessionId });
-				AddPlayer( socket, session_id );
-			})
+			console.log( "Player joined existing session: " + data.session_id );			
 		}
+		
+		socket.room = "SINGLE_ROOM";
+		socket.join(socket.room, function(res)
+		{
+			AddPlayer( socket, data.session_id );
+		});	
     });
 	
 	// Check who's left the playing list every so often - here every - 5s
@@ -94,7 +90,7 @@ io.on('connection', (socket) => {
 			
 			// Ignore anyone who has been away for more than 6 seconds
 			var now = Date.now();
-			if (now - hbeat[key] > 7000) // 7 seconds
+			if (now - hbeat[key] > 4000) // 4 seconds
 			{
 				console.log( "Not heard heatbeat - deleting player" );
 				
@@ -104,7 +100,6 @@ io.on('connection', (socket) => {
 				//emit peopleInfo to update the decreased number
 				socket.broadcast.to("SINGLE_ROOM").emit("peopleInfo", { numPlaying: GetNumPlayers() });
 				//socket.emit("peopleInfo", { numPlaying: GetNumPlayers() });
-
 			}
 		}
 	}
@@ -112,7 +107,7 @@ io.on('connection', (socket) => {
 	// respond to a heartbeat by setting a new time for when we last heard from them
 	socket.on('heartbeat', (data) =>
 	{
-		//console.log( "Heartbeat: " + socket.id );
+		//console.log( "Heartbeat: " + socket.id + " from player out of " + GetNumPlayers() );
 		
 		// Update the last time we heard from someone
 		hbeat[socket.id] = Date.now();

@@ -15,27 +15,28 @@
 	
 	<script>
 
-	const socket = io.connect('localhost');
+	const socket = io.connect();
 
-	// Connect the session
-	var session_id;
 	// Get saved data from sessionStorage and send to server
-	let data = sessionStorage.getItem('sessionId');
-	session_id = data;
-	socket.emit('start-session', {  sessionId: session_id });
+	let session_id = sessionStorage.getItem('session_id');
+	
+	// Connect the session
+	socket.emit('start-session', { session_id: session_id });
 
 	// Look at the receipt from the server
 	socket.on("set-session-acknowledgement", function(data)
 	{
-		console.log( "Received session id " + data.sessionId);
-		sessionStorage.setItem('sessionId', data.sessionId);
+		console.log( "Received session id " + data.session_id);
+		sessionStorage.setItem('session_id', data.session_id);
 	});
 	
 	// Send a heartbeat every 3 seconds - but also send one straight away - so if the client disconnects
 	// within the first 3 seconds - we know
 	setInterval(function() {	
-		socket.emit('heartbeat', { message: "hello" });
-	}, 2000); // milliseconds = 2 seconds = 2000 milliseconds
+		console.log( "Test session storage: " + sessionStorage.getItem('session_id') );
+
+		socket.emit('heartbeat', { message: "hello" });		
+	}, 3000); // milliseconds = 5 seconds = 5000 milliseconds
 		 
 	</script>
 	
