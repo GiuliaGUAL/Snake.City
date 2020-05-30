@@ -10,6 +10,55 @@ var whosPlaying = {};
 console.log( "Running snake.city" );
 server.listen(80);
 
+// Check who's left the playing list every so often - here every - 5s
+var myVar = setInterval(myTimer, 1000);
+
+function myTimer()
+{
+	let didDelete = false;
+	
+	// Loop through all the players that are connected - this might delete multiple players
+	for (let [key, value] of Object.entries(whosPlaying))
+	{
+		// Ignore anyone who has been away for more than 6 seconds
+		var now = Date.now();
+		if (now - hbeat[key] > 4000) // 4 seconds
+		{
+			console.log( "Not heard heatbeat - deleting player: " + key );
+			
+			delete whosPlaying[key];
+			
+			didDelete = true;
+		}
+	}
+	
+	if( didDelete )
+	{		
+		// If there are any players left notify them
+		if( Object.entries(whosPlaying).length )
+		{
+			console.log( "Num playing: " + GetNumPlayers() );
+		}
+		else
+		{
+			console.log( "Removed the last player" );
+		}
+
+		// Tomo - you were asking about this specifically - about different types of send
+		// 
+		// if you want to send to everyone in the room you use
+		// io.in(SINGLE_ROOM).emit('big-announcement'
+		//
+		// if you want to send to everyone in a room except that person who's sending you 
+		// need that socket because it needs to know who to excluse
+		// io.in(SINGLE_ROOM).emit('big-announcement'
+		
+		// emit peopleInfo to update the decreased number
+		// here everyone needs to know who's gone and who's stayed
+		io.in("SINGLE_ROOM").emit("peopleInfo", { numPlaying: GetNumPlayers() });
+	}
+}
+	
 // GetNumPlayers
 // Gets how many players are joined
 function GetNumPlayers()
@@ -43,7 +92,7 @@ function AddPlayer( socket, session_id )
 
     //Everytime, there is a new person, broadcast it
 	socket.emit("peopleInfo", { numPlaying: GetNumPlayers() });	
-	socket.broadcast.to("SINGLE_ROOM").emit("peopleInfo", { numPlaying: GetNumPlayers() });
+	socket.broadcast.in("SINGLE_ROOM").emit("peopleInfo", { numPlaying: GetNumPlayers() });
 }
 
 // This deals with the client connecting to this server
@@ -77,32 +126,6 @@ io.on('connection', (socket) => {
 			AddPlayer( socket, data.session_id );
 		});	
     });
-	
-	// Check who's left the playing list every so often - here every - 5s
-	var myVar = setInterval(myTimer, 1000);
-
-	function myTimer()
-	{
-		// Loop through all the players that are connected
-		for (let [key, value] of Object.entries(whosPlaying))
-		{
-			//console.log( "Checking activity of " + key + " of " + GetNumPlayers() + " players" );
-			
-			// Ignore anyone who has been away for more than 6 seconds
-			var now = Date.now();
-			if (now - hbeat[key] > 4000) // 4 seconds
-			{
-				console.log( "Not heard heatbeat - deleting player" );
-				
-				delete whosPlaying[key];
-				console.log( "Num playing: " + GetNumPlayers() + " after removing " + socket.id );
-				
-				//emit peopleInfo to update the decreased number
-				socket.broadcast.to("SINGLE_ROOM").emit("peopleInfo", { numPlaying: GetNumPlayers() });
-				//socket.emit("peopleInfo", { numPlaying: GetNumPlayers() });
-			}
-		}
-	}
 
 	// respond to a heartbeat by setting a new time for when we last heard from them
 	socket.on('heartbeat', (data) =>
