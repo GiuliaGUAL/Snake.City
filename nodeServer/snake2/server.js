@@ -51,7 +51,7 @@ function myTimer()
 		//
 		// if you want to send to everyone in a room except that person who's sending you 
 		// need that socket because it needs to know who to excluse
-		// io.in(SINGLE_ROOM).emit('big-announcement'
+		// socket.broadcast.to(SINGLE_ROOM).emit('big-announcement'
 		
 		// emit peopleInfo to update the decreased number
 		// here everyone needs to know who's gone and who's stayed
