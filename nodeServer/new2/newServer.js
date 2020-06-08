@@ -16,7 +16,9 @@ wsServer = new WebSocketServer({
     // to accept it.
     autoAcceptConnections: false
 });
- 
+
+console.log((new Date()) + ' hosting webserver 2.00');
+		
 function originIsAllowed(origin) {
   // put logic here to detect whether the specified origin is allowed.
   return true;
@@ -41,6 +43,7 @@ function broadcast( messageType, currentState )
 
 wsServer.on('request', function(request)
 {
+	console.log( "New web server request: " + request.origin);
     if (!originIsAllowed(request.origin))
 	{
       // Make sure we only accept requests from an allowed origin
@@ -49,6 +52,8 @@ wsServer.on('request', function(request)
       return;
     }
     
+	console.log( "Accept protocol");
+	
 	// Accept the connection
     var connection = request.accept('echo-protocol', request.origin);
 		
@@ -111,7 +116,7 @@ wsServer.on('request', function(request)
 	// Respond to a close event
     connection.on('close', function(reasonCode, description)
 	{
-        console.log((new Date()) + ' Peer ' + connection.remoteAddress + ' disconnected.');
+        console.log((new Date()) + ' Peer ' + connection.remoteAddress + ' disconnected.' + description);
 		
 		// Delete the connection
 		delete whosPlaying[connection.id];
@@ -123,7 +128,7 @@ wsServer.on('request', function(request)
 
 app.get('/', (req, res) =>
 {
-	res.sendFile(__dirname + '/game.html');
+	res.sendFile(__dirname + '/index.html');
 });
 
 app.get('/stopwatch.js', (req, res) =>
