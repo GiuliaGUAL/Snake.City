@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+  
+  <head>
+    <title>Snake.City</title>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+
+    <!-- import the webpage's stylesheet -->
+    <link rel="stylesheet" href="game.css">
+
+	<script>
+		 
+		var ws = new WebSocket("ws://localhost", "echo-protocol");
+		 
+		ws.onopen = function()
+		{
+			console.log("Connected to server")
+		};
+
+	</script>
+	
+    <script src="game.js" defer></script>
+    <script src="stopwatch.js"></script>
+  </head>  
+
+  <body>
+      <div id = "buttonA" class = "A-button"></div>
+      <h1 id="timer">00 : 00 . 000</h1>
+      <h1 id="instruction">Start pressing both sides!</h1>
+      <div id = "debugText">Initiating...</div>
+	  <div id = "stateText">Current State is...</div>
+	  <div id = "phoneNum">Players: 0</div>
+      <div id = "buttonB" class = "B-button"></div>
+      <div id = "rectangle" class = "rectangle"></div>
+
+  </body>
+  
+</html>

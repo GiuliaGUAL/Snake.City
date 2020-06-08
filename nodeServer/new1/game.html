@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+  
+  <head>
+    <title>Snake.City</title>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+
+	<script>
+		 
+		var ws = new WebSocket("ws://localhost", "echo-protocol");
+		 
+		ws.onopen = function() {
+		  console.log("ok")
+		  
+		  ws.send("*This is a message*"); 
+		};
+		
+		ws.onmessage = function(e)
+		{
+			if (typeof e.data === 'string')
+			{
+				console.log("Received: '" + e.data + "'");
+			}
+		};
+
+	</script>
+
+  </head>  
+
+  <body>
+Hello World
+  </body>
+  
+</html>
