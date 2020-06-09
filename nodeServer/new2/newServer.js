@@ -19,9 +19,14 @@ wsServer = new WebSocketServer({
 
 console.log((new Date()) + ' hosting webserver 2.00');
 		
-function originIsAllowed(origin) {
-  // put logic here to detect whether the specified origin is allowed.
-  return true;
+function originIsAllowed(origin)
+{
+	if( ( origin == "http://localhost" ) ||
+		( origin == "http://snake.city" ) )
+	{
+		return true;
+	}
+	return aflse;
 }
 
 function broadcast( messageType, currentState )
@@ -51,8 +56,10 @@ wsServer.on('request', function(request)
       console.log((new Date()) + ' Connection from origin ' + request.origin + ' rejected.');
       return;
     }
-    
-	console.log( "Accept protocol");
+	else
+	{
+		console.log((new Date()) + ' Connection from origin ' + request.origin);
+	}
 	
 	// Accept the connection
     var connection = request.accept('echo-protocol', request.origin);
@@ -60,7 +67,7 @@ wsServer.on('request', function(request)
 	// Assign our own ID
 	connection.id = uuid();	
 
-	console.log((new Date()) + ' Connection accepted. id = ' + connection.id);
+	console.log((new Date()) + ' Connection accepted given id = ' + connection.id);
 	
 	// Add a player
 	//   adding the connection

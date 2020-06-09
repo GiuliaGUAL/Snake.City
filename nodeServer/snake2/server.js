@@ -47,11 +47,11 @@ function myTimer()
 		// Tomo - you were asking about this specifically - about different types of send
 		// 
 		// if you want to send to everyone in the room you use
-		// io.in(SINGLE_ROOM).emit('big-announcement'
+		// io.in(SINGLE_ROOM).emit('big-announcement')
 		//
 		// if you want to send to everyone in a room except that person who's sending you 
-		// need that socket because it needs to know who to excluse
-		// socket.broadcast.to(SINGLE_ROOM).emit('big-announcement'
+		// need that socket because it needs to know who to exclude
+		// socket.broadcast.to(SINGLE_ROOM).emit('big-announcement')
 		
 		// emit peopleInfo to update the decreased number
 		// here everyone needs to know who's gone and who's stayed
@@ -91,8 +91,7 @@ function AddPlayer( socket, session_id )
 	console.log( "Num playing game: " + GetNumPlayers() );
 
     //Everytime, there is a new person, broadcast it
-	socket.emit("peopleInfo", { numPlaying: GetNumPlayers() });	
-	socket.broadcast.in("SINGLE_ROOM").emit("peopleInfo", { numPlaying: GetNumPlayers() });
+	io.in("SINGLE_ROOM").emit("peopleInfo", { numPlaying: GetNumPlayers() });
 }
 
 // This deals with the client connecting to this server
@@ -164,11 +163,8 @@ io.on('connection', (socket) => {
 				
 				let data = { currentState : "connected" };
 				
-				// Send to all the other players in the game our keypair variable called 'data'
-				socket.broadcast.to("SINGLE_ROOM").emit("snakeEvents", data);
-				
-				// Ad us
-				socket.emit("snakeEvents", data);
+				// Send to all the other players  in the game our keypair variable called 'data'
+				io.in("SINGLE_ROOM").emit("SINGLE_ROOM").emit("snakeEvents", data);
 			}
 		}
 		
@@ -192,7 +188,7 @@ io.on('connection', (socket) => {
 				let data = { currentState : "paused" };
 				
 				// Send to all the other players in the game our keypair variable called 'data'
-				socket.broadcast.to("SINGLE_ROOM").emit("snakeEvents", data);
+				io.in("SINGLE_ROOM").emit("snakeEvents", data);
 			}
 		}
 	});
