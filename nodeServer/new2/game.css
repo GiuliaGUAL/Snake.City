@@ -68,7 +68,10 @@ body{
     left: 50%;
     transform : translate(-50%, -50%);  
     border-radius: 50%;
-    transition: background-color 0.5s;
+    opacity: 0.8;
+    transition : opacity 0.2s;
+    transition: background-color 0.9s;
+    transition: width  0.2s;
 }
 
 .B-button{
@@ -79,13 +82,16 @@ body{
     left: 50%;
     transform : translate(-50%, 50%);  
     border-radius: 50%;
+    opacity: 0.8;
+    transition : opacity 0.2s;
     transition: background-color 0.9s;
+    transition: width  0.2s;
+
 }
 
-
 .active {
-    width: 330px;
-    padding: 20px;
+    width: 350px;
+    opacity: 1.0;
 }
 
 /* Rectangle */
