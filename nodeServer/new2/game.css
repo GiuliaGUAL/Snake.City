@@ -1,16 +1,20 @@
-body{
-    margin: auto; 
-    -webkit-user-select: none;  /* Chrome all / Safari all */
-    -moz-user-select: none;     /* Firefox all */
-    -ms-user-select: none;      /* IE 10+ */
-    user-select: none;          /* Likely future */  
+body {
+    margin: auto;
+    -webkit-user-select: none;
+    /* Chrome all / Safari all */
+    -moz-user-select: none;
+    /* Firefox all */
+    -ms-user-select: none;
+    /* IE 10+ */
+    user-select: none;
+    /* Likely future */
     overflow: hidden;
     background-color: black;
     font-family: 'Sarpanch', Arial, Helvetica, sans-serif;
     color: blanchedalmond;
 }
 
-#stateText{
+#stateText {
     position: fixed;
     bottom: 0%;
     right: 0%;
@@ -20,27 +24,25 @@ body{
     text-orientation: mixed;
 }
 
-#instruction{
+#instruction {
     font-weight: 600;
     position: fixed;
     width: 350px;
     text-align: center;
     top: 40%;
     left: 50%;
-    transform : translate(-50%, -50%);  
+    transform: translate(-50%, -50%);
 }
 
-
-#timer{
+#timer {
     font-weight: 400;
     position: fixed;
     top: 50%;
     left: 50%;
-    transform : translate(-50%, -50%);  
+    transform: translate(-50%, -50%);
 }
 
-
-#phoneNum{
+#phoneNum {
     position: fixed;
     top: 0%;
     left: 0%;
@@ -50,43 +52,41 @@ body{
     text-orientation: mixed;
 }
 
-
-#debugText{
+#debugText {
     position: fixed;
     top: 75%;
     left: 50%;
-    transform : translate(-50%, -50%);  
+    transform: translate(-50%, -50%);
 }
 
 /* The ellipse button */
 
-.A-button{
+.A-button {
     position: fixed;
     width: 300px;
     height: 300px;
-    top:0%;
+    top: 0%;
     left: 50%;
-    transform : translate(-50%, -50%);  
+    transform: translate(-50%, -50%);
     border-radius: 50%;
     opacity: 0.8;
-    transition : opacity 0.2s;
+    transition: opacity 0.2s;
     transition: background-color 0.9s;
-    transition: width  0.2s;
+    transition: width 0.2s;
 }
 
-.B-button{
+.B-button {
     position: fixed;
     width: 300px;
     height: 300px;
-    bottom:0px;
+    bottom: 0px;
     left: 50%;
-    transform : translate(-50%, 50%);  
+    transform: translate(-50%, 50%);
     border-radius: 50%;
     opacity: 0.8;
-    transition : opacity 0.2s;
+    transition: opacity 0.2s;
     transition: background-color 0.9s;
-    transition: width  0.2s;
-
+    transition: width 0.2s;
 }
 
 .active {
@@ -96,63 +96,73 @@ body{
 
 /* Rectangle */
 
-
-.rectangle{
+.rectangle {
     position: fixed;
     width: 300px;
     height: 100%;
     left: 50%;
-    transform : translate(-50%, 0%);  
-    z-index: -100 ;
+    transform: translate(-50%, 0%);
+    z-index: -100;
     opacity: 0;
     transition: background-color 0.9s;
 }
 
-
-.visible{
+.visible {
     opacity: 0.7;
 }
 
 .blink {
-    animation:fade 1500ms infinite;
-    -webkit-animation:fade 1500ms infinite;
+    animation: fade 1500ms infinite;
+    -webkit-animation: fade 1500ms infinite;
 }
 
 @keyframes fade {
-    from { opacity: 0.7; }
-    50% { opacity: 0.4; }
-    to { opacity: 0.7; }
-}                                                                                                                                                                                                                                  
+    from {
+        opacity: 0.7;
+    }
+    50% {
+        opacity: 0.4;
+    }
+    to {
+        opacity: 0.7;
+    }
+}
 
 @-webkit-keyframes fade {
-    from { opacity: 0.7; }
-    50% { opacity: 0.4; }
-    to { opacity: 0.7; }
+    from {
+        opacity: 0.7;
+    }
+    50% {
+        opacity: 0.4;
+    }
+    to {
+        opacity: 0.7;
+    }
 }
 
 /* Game Over Restart Button */
 
-#restartButton{
+#restartButton {
     position: fixed;
     top: 65%;
     left: 50%;
-    transform : translate(-50%, -50%);  
-	background-color:black;
-	-moz-border-radius:18px;
-    -webkit-border-radius:18px;
+    transform: translate(-50%, -50%);
+    background-color: black;
+    -moz-border-radius: 18px;
+    -webkit-border-radius: 18px;
     border-color: whitesmoke;
-	border-radius:18px;
+    border-radius: 18px;
     border: 3px solid #FFFFFF;
-	cursor:pointer;
-	color: white;
-	font-size:20px;
-	padding:10px 25px;
-    text-decoration:none;
+    cursor: pointer;
+    color: white;
+    font-size: 20px;
+    padding: 10px 25px;
+    text-decoration: none;
     display: none;
 }
 
 #restartButton:hover {
-	background-color: rgb(69, 60, 233) ;
+    background-color: rgb(69, 60, 233);
 }
 
 #restartButton:active {

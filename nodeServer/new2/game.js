@@ -2,7 +2,7 @@
 const STATE = {
     'INITIATE': 'initiated',
     'START': 'started',
-	'WAIT': 'waiting',
+    'WAIT': 'waiting',
     'CONNECTED': 'connected',
     'PAUSED': 'paused',
     'FINISHED': 'finished',
@@ -50,15 +50,15 @@ function startup() {
     buttonB.addEventListener("touchend", touchEndB, false);
     buttonB.addEventListener("touchcancel", touchEndB, false);
 
-	// For testing add mouse handlers - but don't handle the cancel
-	// this allows us to test the game by clicking on one button
-	// then clicking on the other button
-	// to simulate them letting go - click on that particular button again
-	buttonA.addEventListener("mousedown", touchStartA, false);
-	buttonA.addEventListener("mouseup", touchEndA, false);
-	buttonB.addEventListener("mousedown", touchStartB, false);
-	buttonB.addEventListener("mouseup", touchEndB, false);
-	
+    // For testing add mouse handlers - but don't handle the cancel
+    // this allows us to test the game by clicking on one button
+    // then clicking on the other button
+    // to simulate them letting go - click on that particular button again
+    buttonA.addEventListener("mousedown", touchStartA, false);
+    buttonA.addEventListener("mouseup", touchEndA, false);
+    buttonB.addEventListener("mousedown", touchStartB, false);
+    buttonB.addEventListener("mouseup", touchEndB, false);
+
     buttonStateUpdate();
     //touchCancel handles a case where the users finger has slipped to the browser etc...
     //buttonA.addEventListener("touchmove", handleMove, false);
@@ -66,9 +66,9 @@ function startup() {
 
 //Function that is called when restart button is pressed at the end.
 //restartGame is triggered in the HTML
-function restartGame(){
+function restartGame() {
     currentSTATE = STATE.INITIATE;
-    ws.send( currentSTATE );
+    ws.send(currentSTATE);
     renderGame(currentSTATE);
 }
 
@@ -121,85 +121,73 @@ function buttonStateUpdate() {
     stateManage();
 }
 
-function stateManage()
-{
-	var lastSTATE = currentSTATE;
+function stateManage() {
+    var lastSTATE = currentSTATE;
 
-    switch (currentSTATE)
-	{	
+    switch (currentSTATE) {
         //Initial screen, when some button is pressed, state goes to start.
         case STATE.INITIATE:
-			{
-				if (currentBUTTON == BUTTON.A || currentBUTTON == BUTTON.B)
-				{
-					currentSTATE = STATE.START;
-				}
-			}
+            {
+                if (currentBUTTON == BUTTON.A || currentBUTTON == BUTTON.B) {
+                    currentSTATE = STATE.START;
+                }
+            }
             break;
-            
-		//
-        case STATE.START:			
-			if (currentBUTTON == BUTTON.BOTH)
-			{
-				currentSTATE = STATE.WAIT;
-			}
-			break;
-			
-		case STATE.WAIT:
-			// do nothing - this is triggered by the server
-			break;
-	
-		case STATE.CONNECTED:
-			if( currentSTATE == STATE.CONNECTED )
-			{
-				if (currentBUTTON == BUTTON.A || currentBUTTON == BUTTON.B)
-				{
-					currentSTATE = STATE.PAUSED;
-				}
-			}
-			break;
-	}
-	
-	if( lastSTATE != currentSTATE )
-	{
-		ws.send( currentSTATE );
-	}
-			
+
+        //
+        case STATE.START:
+            if (currentBUTTON == BUTTON.BOTH) {
+                currentSTATE = STATE.WAIT;
+            }
+            break;
+
+        case STATE.WAIT:
+            // do nothing - this is triggered by the server
+            break;
+
+        case STATE.CONNECTED:
+            if (currentSTATE == STATE.CONNECTED) {
+                if (currentBUTTON == BUTTON.A || currentBUTTON == BUTTON.B) {
+                    currentSTATE = STATE.PAUSED;
+                }
+            }
+            break;
+    }
+
+    if (lastSTATE != currentSTATE) {
+        ws.send(currentSTATE);
+    }
+
     //Calls rendergame which deals with how the screen display is handled
     renderGame(currentSTATE);
 }
 
-ws.onmessage = function(e)
-{
-	if (typeof e.data === 'string')
-	{
-		console.log( "Recevied from server: " + e.data );
-		
-		var objects = JSON.parse(e.data);
-		
-		if( objects['messageType'] == "update" )
-		{
-			numPlayers = objects['numPlayers'];				// Update the number of players
-			updatePlayers( numPlayers);
-		}
-		else if( objects['messageType'] == "state" )
-		{
-			currentSTATE = objects['currentState'];			// Update our state
+ws.onmessage = function (e) {
+    if (typeof e.data === 'string') {
+        console.log("Recevied from server: " + e.data);
+
+        var objects = JSON.parse(e.data);
+
+        if (objects['messageType'] == "update") {
+            numPlayers = objects['numPlayers'];				// Update the number of players
+            updatePlayers(numPlayers);
         }
-        
-        if(currentSTATE == "initiated"){
+        else if (objects['messageType'] == "state") {
+            currentSTATE = objects['currentState'];			// Update our state
+        }
+
+        if (currentSTATE == "initiated") {
             console.log("restart recived")
         }
-		renderGame( currentSTATE );
-	}
+        renderGame(currentSTATE);
+    }
 };
-		
-function updatePlayers(numPlayers)
-{
-    console.log("People info: " + numPlayers );
+
+function updatePlayers(numPlayers) {
+    console.log("People info: " + numPlayers);
 
     //Change colors based on the number of people.
-    let colorchange =numPlayers*60;
+    let colorchange = numPlayers * 60;
     buttonA.style.backgroundColor = `hsl(${colorchange},100%,50%)`;
     buttonB.style.backgroundColor = `hsl(${colorchange},100%,50%)`;
     rectangle.style.backgroundColor = `hsl(${colorchange},80%,50%)`;
@@ -211,6 +199,7 @@ function renderGame(state) {
     switch (state) {
         case STATE.INITIATE:
             //currently handling all the restart related handling here.
+            //might need to make a separate function for ease of use later
             A_pressed = false;
             B_pressed = false;
             currentBUTTON = BUTTON.NONE;
@@ -228,7 +217,7 @@ function renderGame(state) {
             instructionText.innerHTML = "Wait for others";
             rectangle.classList.add("visible");
             break;
-			
+
         case STATE.CONNECTED:
             instructionText.innerHTML = "Hold it!!";
             rectangle.classList.add("blink");
