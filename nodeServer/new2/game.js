@@ -189,7 +189,7 @@ function updatePlayers(numPlayers)
     buttonA.style.backgroundColor = `hsl(${colorchange},100%,50%)`;
     buttonB.style.backgroundColor = `hsl(${colorchange},100%,50%)`;
     rectangle.style.backgroundColor = `hsl(${colorchange},80%,50%)`;
-    phoneNum.innerHTML = "Num players:" + numPlayers;
+    phoneNum.innerHTML = "Connected devices : " + numPlayers;
 }
 
 function renderGame(state) {
@@ -210,13 +210,14 @@ function renderGame(state) {
 			
         case STATE.CONNECTED:
             instructionText.innerHTML = "Hold it!!";
-            rectangle.classList.add("visible");
+            rectangle.classList.add("blink");
             watch.start();
             break;
 
         case STATE.PAUSED:
             instructionText.innerHTML = "GAME OVER";
             rectangle.classList.remove("visible");
+            rectangle.classList.remove("blink");
             watch.stop();
             break;
 

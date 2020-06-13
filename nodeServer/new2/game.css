@@ -1,25 +1,28 @@
 body{
-    margin: auto;
+    margin: auto; 
     -webkit-user-select: none;  /* Chrome all / Safari all */
     -moz-user-select: none;     /* Firefox all */
     -ms-user-select: none;      /* IE 10+ */
     user-select: none;          /* Likely future */  
     overflow: hidden;
     background-color: black;
-    font-family: Arial, Helvetica, sans-serif;
+    font-family: 'Sarpanch', Arial, Helvetica, sans-serif;
     color: blanchedalmond;
-    /* position:fixed;  */
 }
 
 #stateText{
-    position: absolute;
-    top: 30%;
-    left: 50%;
-    transform : translate(-50%, -50%);  
+    position: fixed;
+    bottom: 0%;
+    right: 0%;
+    padding-right: 20px;
+    padding-bottom: 20px;
+    writing-mode: vertical-rl;
+    text-orientation: mixed;
 }
 
 #instruction{
-    position: absolute;
+    font-weight: 600;
+    position: fixed;
     width: 350px;
     text-align: center;
     top: 40%;
@@ -29,7 +32,8 @@ body{
 
 
 #timer{
-    position: absolute;
+    font-weight: 400;
+    position: fixed;
     top: 50%;
     left: 50%;
     transform : translate(-50%, -50%);  
@@ -37,15 +41,18 @@ body{
 
 
 #phoneNum{
-    position: absolute;
-    top: 60%;
-    left: 50%;
-    transform : translate(-50%, -50%);  
+    position: fixed;
+    top: 0%;
+    left: 0%;
+    padding-left: 20px;
+    padding-top: 20px;
+    writing-mode: vertical-rl;
+    text-orientation: mixed;
 }
 
 
 #debugText{
-    position: absolute;
+    position: fixed;
     top: 70%;
     left: 50%;
     transform : translate(-50%, -50%);  
@@ -54,44 +61,65 @@ body{
 
 
 .A-button{
-    position: absolute;
+    position: fixed;
     width: 300px;
     height: 300px;
     top:0%;
     left: 50%;
     transform : translate(-50%, -50%);  
     border-radius: 50%;
+    transition: background-color 0.5s;
 }
 
 .B-button{
-    position: absolute;
+    position: fixed;
     width: 300px;
     height: 300px;
     bottom:0px;
     left: 50%;
     transform : translate(-50%, 50%);  
     border-radius: 50%;
+    transition: background-color 0.9s;
 }
 
-.rectangle{
-    position: absolute;
-    width: 300px;
-    height: 100%;
-    left: 50%;
-    transform : translate(-50%, 0%);  
-    background-color: darkgreen;
-    z-index: -1 ;
-    opacity: 0;
-}
-
-.visible{
-    opacity: 0.8;
-}
 
 .active {
-    background-color:green;
     width: 330px;
     padding: 20px;
 }
 
+
+
+.rectangle{
+    position: fixed;
+    width: 300px;
+    height: 100%;
+    left: 50%;
+    transform : translate(-50%, 0%);  
+    z-index: -1 ;
+    opacity: 0;
+    transition: background-color 0.9s;
+}
+
+
+.visible{
+    opacity: 0.7;
+}
+
+.blink {
+    animation:fade 1500ms infinite;
+    -webkit-animation:fade 1500ms infinite;
+}
+
+@keyframes fade {
+    from { opacity: 0.7; }
+    50% { opacity: 0.4; }
+    to { opacity: 0.7; }
+}                                                                                                                                                                                                                                  
+
+@-webkit-keyframes fade {
+    from { opacity: 0.7; }
+    50% { opacity: 0.4; }
+    to { opacity: 0.7; }
+}
 
