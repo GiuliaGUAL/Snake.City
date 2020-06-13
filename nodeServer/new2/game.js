@@ -30,6 +30,7 @@ const debugText = document.getElementById("debugText");
 const stateText = document.getElementById("stateText");
 const phoneNumText = document.getElementById("phoneNum");
 const instructionText = document.getElementById("instruction");
+const restartButton = document.getElementById("restartButton");
 
 //Importing stopwatch function stopwatch.js
 const watch = new Stopwatch(timer);
@@ -61,6 +62,14 @@ function startup() {
     buttonStateUpdate();
     //touchCancel handles a case where the users finger has slipped to the browser etc...
     //buttonA.addEventListener("touchmove", handleMove, false);
+}
+
+//Function that is called when restart button is pressed at the end.
+//restartGame is triggered in the HTML
+function restartGame(){
+    currentSTATE = STATE.INITIATE;
+    ws.send( currentSTATE );
+    renderGame(currentSTATE);
 }
 
 function touchStartA(event) {
@@ -118,6 +127,7 @@ function stateManage()
 
     switch (currentSTATE)
 	{	
+        //Initial screen, when some button is pressed, state goes to start.
         case STATE.INITIATE:
 			{
 				if (currentBUTTON == BUTTON.A || currentBUTTON == BUTTON.B)
@@ -125,8 +135,9 @@ function stateManage()
 					currentSTATE = STATE.START;
 				}
 			}
-			break;
-			
+            break;
+            
+		//
         case STATE.START:			
 			if (currentBUTTON == BUTTON.BOTH)
 			{
@@ -197,7 +208,9 @@ function renderGame(state) {
     stateText.innerHTML = "currentSTATE: " + currentSTATE;
     switch (state) {
         case STATE.INITIATE:
+            watch.reset();
             instructionText.innerHTML = "Press both sides!";
+            restartButton.style.display = "none";
             break;
         case STATE.START:
             instructionText.innerHTML = "Touch the other side!";
@@ -218,6 +231,7 @@ function renderGame(state) {
             instructionText.innerHTML = "GAME OVER";
             rectangle.classList.remove("visible");
             rectangle.classList.remove("blink");
+            restartButton.style.display = "inline-block";
             watch.stop();
             break;
 

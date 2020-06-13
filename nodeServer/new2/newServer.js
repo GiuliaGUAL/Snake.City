@@ -117,6 +117,11 @@ wsServer.on('request', function(request)
 			{
 				broadcast( "state", "paused" );				
 			}
+			//when restart button is pressed
+			else if( message.utf8Data == "initiated" )
+			{
+				broadcast( "state", "initiated" );				
+			}
         }
     });
 	
