@@ -185,8 +185,11 @@ ws.onmessage = function(e)
 		else if( objects['messageType'] == "state" )
 		{
 			currentSTATE = objects['currentState'];			// Update our state
-		}
-
+        }
+        
+        if(currentSTATE == "initiated"){
+            console.log("restart recived")
+        }
 		renderGame( currentSTATE );
 	}
 };
@@ -204,13 +207,18 @@ function updatePlayers(numPlayers)
 }
 
 function renderGame(state) {
-    debugText.innerHTML = "currentBUTTON: " + currentBUTTON;
-    stateText.innerHTML = "currentSTATE: " + currentSTATE;
+
     switch (state) {
         case STATE.INITIATE:
+            //currently handling all the restart related handling here.
+            A_pressed = false;
+            B_pressed = false;
+            currentBUTTON = BUTTON.NONE;
+            buttonA.classList.remove("active");
+            buttonB.classList.remove("active");
             watch.reset();
-            instructionText.innerHTML = "Press both sides!";
             restartButton.style.display = "none";
+            instructionText.innerHTML = "Press both sides!";
             break;
         case STATE.START:
             instructionText.innerHTML = "Touch the other side!";
@@ -238,5 +246,7 @@ function renderGame(state) {
         default:
         // code block
     }
+    debugText.innerHTML = "currentBUTTON: " + currentBUTTON;
+    stateText.innerHTML = "currentSTATE: " + currentSTATE;
 }
 
