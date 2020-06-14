@@ -105,6 +105,7 @@ body {
     z-index: -100;
     opacity: 0;
     transition: background-color 0.9s;
+    opacity: 0.5s;
 }
 
 .visible {

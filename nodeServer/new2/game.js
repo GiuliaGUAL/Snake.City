@@ -175,10 +175,6 @@ ws.onmessage = function (e) {
         else if (objects['messageType'] == "state") {
             currentSTATE = objects['currentState'];			// Update our state
         }
-
-        if (currentSTATE == "initiated") {
-            console.log("restart recived")
-        }
         renderGame(currentSTATE);
     }
 };
