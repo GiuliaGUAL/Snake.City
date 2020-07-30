@@ -1,40 +1,40 @@
 <!DOCTYPE html>
 <html lang="en">
-  
-  <head>
-    <title>Snake.City</title>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
 
-    <!-- import the webpage's stylesheet -->
-    <link rel="stylesheet" href="game.css">
+<head>
+  <title>Snake.City</title>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
 
-	<script>
-		 
-		var ws = new WebSocket("ws://localhost", "echo-protocol");
-		 
-		ws.onopen = function()
-		{
-			console.log("Connected to server")
-		};
+  <!-- import the webpage's stylesheet -->
+  <link rel="stylesheet" href="game.css">
+  <link href="https://fonts.googleapis.com/css2?family=Sarpanch:wght@400;600;800&display=swap" rel="stylesheet">
 
-	</script>
-	
-    <script src="game.js" defer></script>
-    <script src="stopwatch.js"></script>
-  </head>  
+  <script>
 
-  <body>
-      <div id = "buttonA" class = "A-button"></div>
-      <h1 id="timer">00 : 00 . 000</h1>
-      <h1 id="instruction">Start pressing both sides!</h1>
-      <div id = "debugText">Initiating...</div>
-	  <div id = "stateText">Current State is...</div>
-	  <div id = "phoneNum"></div>
-      <div id = "buttonB" class = "B-button"></div>
-      <div id = "rectangle" class = "rectangle"></div>
+    var ws = new WebSocket("ws://localhost", "echo-protocol");
 
-  </body>
-  
+    ws.onopen = function () {
+      console.log("Connected to server")
+    };
+
+  </script>
+
+  <script src="game.js" defer></script>
+  <script src="stopwatch.js"></script>
+</head>
+
+<body>
+  <h1 id="timer">00 : 00</h1>
+  <h1 id="instruction">Start pressing both sides!</h1>
+  <div id="debugText">Initiating...</div>
+  <div id="stateText">Current State is...</div>
+  <div id="phoneNum"></div>
+  <div id="buttonA" class="A-button"></div>
+  <div id="buttonB" class="B-button"></div>
+  <div id="rectangle" class="rectangle"></div>
+  <div id="restartButton" onclick="restartGame()"> Restart </div>
+</body>
+
 </html>

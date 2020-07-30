@@ -98,6 +98,7 @@ wsServer.on('request', function(request)
 				
 				for (let [key, value] of Object.entries(whosPlaying))
 				{
+					console.log("State is : " + value['currentState']);
 					if( value['currentState'] != "waiting" )
 					{
 						everyoneWaiting = false;
@@ -116,6 +117,16 @@ wsServer.on('request', function(request)
 			else if( message.utf8Data == "paused" )
 			{
 				broadcast( "state", "paused" );				
+			}
+			//when restart button is pressed
+			else if( message.utf8Data == "initiated" )
+			{
+				//Tomo: changing the state of all the connection to initiated on server
+				//Maybe better way of doing this?
+				for (let [key, value] of Object.entries(whosPlaying)){
+					value['currentState'] = "initiated"
+				}
+				broadcast( "state", "initiated" );	
 			}
         }
     });
