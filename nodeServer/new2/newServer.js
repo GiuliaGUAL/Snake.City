@@ -1,5 +1,6 @@
 var WebSocketServer = require('websocket').server;
 var http = require('http');
+var fs = require('fs');
 
 const { uuid } = require('uuidv4');
 const app = require('express')();
@@ -154,6 +155,31 @@ app.get('/stopwatch.js', (req, res) =>
 	res.sendFile(__dirname + '/stopwatch.js');
 });
 
+app.get('/connect.js', (req, res) =>
+{
+	try {
+	  if (fs.existsSync(__dirname + '/connectLocalHost.js')) {
+		////file exists
+		console.log("Connecting to ws://localhost");
+		res.sendFile(__dirname + '/connectLocalHost.js');		
+	  }
+	} catch(err) {
+		console.log("Connecting to ws://snake.city");
+		res.sendFile(__dirname + '/connect.js');
+	}
+	res.sendFile(__dirname + '/connect.js');
+});
+
+app.get('/create.html', (req, res) =>
+{
+	res.sendFile(__dirname + '/create.html');
+});
+
+app.get('/play_button.png', (req, res) =>
+{
+	res.sendFile(__dirname + '/play_button.png');
+});
+
 app.get('/game.css', (req, res) =>
 {
 	res.sendFile(__dirname + '/game.css');
@@ -167,6 +193,18 @@ app.get('/game.html', (req, res) =>
 app.get('/game.js', (req, res) =>
 {
 	res.sendFile(__dirname + '/game.js');
+});
+
+
+app.get('/covid.html', (req, res) =>
+{
+	res.sendFile(__dirname + '/covid.html');
+});
+
+
+app.get('/join.html', (req, res) =>
+{
+	res.sendFile(__dirname + '/join.html');
 });
 
 server.listen(80);

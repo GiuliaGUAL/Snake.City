@@ -24,6 +24,217 @@ body {
     text-orientation: mixed;
 }
 
+#prevbutton {
+    font-family: 'Sarpanch', Arial, Helvetica, sans-serif;
+ 
+	font-style: normal;
+	font-weight: bold;	
+	font-size: large;
+	
+	-webkit-border-radius: 10px;
+	-khtml-border-radius: 10px;	
+	-moz-border-radius: 10px;
+	border-radius: 10px;
+	
+	background-color:#FF7A00;
+	
+	color: black;
+	border: 0;
+	padding-left: 40px;
+	padding-right: 40px;
+	padding-top: 10px;
+	padding-bottom: 10px;
+	text-align: center;
+	text-decoration: none;
+	display: inline-block;
+  
+	position: absolute;
+	left: 30%;
+    top: 88%;
+	transform: translate(-50%, -50%);
+}
+
+#homebutton {
+    font-family: 'Sarpanch', Arial, Helvetica, sans-serif;
+ 
+	font-style: normal;
+	font-weight: bold;	
+	font-size: large;
+	
+	-webkit-border-radius: 10px;
+	-khtml-border-radius: 10px;	
+	-moz-border-radius: 10px;
+	border-radius: 10px;
+	
+	background-color:#FF7A00;
+	
+	color: black;
+	border: 0;
+	padding-left: 40px;
+	padding-right: 40px;
+	padding-top: 10px;
+	padding-bottom: 10px;
+	text-align: center;
+	text-decoration: none;
+	display: inline-block;
+  
+	position: absolute;
+	left: 50%;
+    top: 88%;
+	transform: translate(-50%, -50%);
+}
+
+#nextbutton {
+    font-family: 'Sarpanch', Arial, Helvetica, sans-serif;
+ 
+	font-style: normal;
+	font-weight: bold;	
+	font-size: large;
+	
+	border-radius: 4%/15%;
+	
+	background-color:#00FFE0;
+	
+	color: black;
+	
+	-webkit-border-radius: 10px;
+	-khtml-border-radius: 10px;	
+	-moz-border-radius: 10px;
+	border-radius: 10px;
+	
+	padding-left: 40px;
+	padding-right: 40px;
+	padding-top: 10px;
+	padding-bottom: 10px;
+	text-align: center;
+	text-decoration: none;
+	display: inline-block;
+  
+	position: absolute;
+	left: 70%;
+    top: 88%;
+	transform: translate(-50%, -50%);
+}
+
+#createbutton {
+    font-family: 'Sarpanch', Arial, Helvetica, sans-serif;
+ 
+	font-style: normal;
+	font-weight: bold;	
+	font-size: large;
+	
+	-webkit-border-radius: 10px;
+	-khtml-border-radius: 10px;	
+	-moz-border-radius: 10px;
+	border-radius: 10px;
+	
+	background-color:#00FFE0;
+	
+	color: black;
+	border: 0;
+	padding-left: 40px;
+	padding-right: 40px;
+	padding-top: 10px;
+	padding-bottom: 10px;
+	text-align: center;
+	text-decoration: none;
+	display: inline-block;
+  
+	position: absolute;
+	left: 50%;
+    top: 88%;
+	transform: translate(-50%, -50%);
+}
+
+#playbutton {
+    font-family: 'Sarpanch', Arial, Helvetica, sans-serif;
+ 
+	font-style: normal;
+	font-weight: bold;	
+	font-size: xx-large;
+	
+	-webkit-border-radius: 10px;
+	-khtml-border-radius: 10px;	
+	-moz-border-radius: 10px;
+	border-radius: 10px;
+	
+	background-color:#FE3552;
+	
+	color: black;
+	border: 0;
+	padding-left: 40px;
+	padding-right: 40px;
+	padding-top: 10px;
+	padding-bottom: 10px;
+	text-align: center;
+	text-decoration: none;
+	display: inline-block;
+  
+	position: absolute;
+	left: 50%;
+    top: 20%;
+	transform: translate(-50%, -50%);
+}
+
+#covidbutton {
+    font-family: 'Sarpanch', Arial, Helvetica, sans-serif;
+ 
+	font-style: normal;
+	font-weight: bold;	
+	font-size: large;
+	
+	-webkit-border-radius: 10px;
+	-khtml-border-radius: 10px;	
+	-moz-border-radius: 10px;
+	border-radius: 10px;
+	
+	background-color:#FE3552;
+	
+	color: black;
+	border: 0;
+	padding-left: 40px;
+	padding-right: 40px;
+	padding-top: 10px;
+	padding-bottom: 10px;
+	text-align: center;
+	text-decoration: none;
+	display: inline-block;
+  
+	position: absolute;
+	left: 50%;
+    top: 20%;
+	transform: translate(-50%, -50%);
+}
+
+#bodytext {
+	font-style: normal;
+	font-weight: normal;	
+	font-size: medium;
+    position: fixed;
+    top:55%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+}
+
+#bodytext2 {
+	font-style: normal;
+	font-weight: normal;	
+	font-size: small;
+    position: fixed;
+    top:45%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+}
+
+#debugText {
+    position: fixed;
+    top: 75%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
 #instruction {
     font-weight: 600;
     position: fixed;
@@ -50,13 +261,6 @@ body {
     padding-top: 20px;
     writing-mode: vertical-rl;
     text-orientation: mixed;
-}
-
-#debugText {
-    position: fixed;
-    top: 75%;
-    left: 50%;
-    transform: translate(-50%, -50%);
 }
 
 /* The ellipse button */
