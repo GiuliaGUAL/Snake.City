@@ -175,14 +175,14 @@ app.get('/create.html', (req, res) =>
 	res.sendFile(__dirname + '/create.html');
 });
 
-app.get('/play_button.png', (req, res) =>
-{
-	res.sendFile(__dirname + '/play_button.png');
-});
-
 app.get('/game.css', (req, res) =>
 {
 	res.sendFile(__dirname + '/game.css');
+});
+
+app.get('/logo.png', (req, res) =>
+{
+	res.sendFile(__dirname + '/logo.png');
 });
 
 app.get('/game.html', (req, res) =>
