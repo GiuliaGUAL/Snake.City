@@ -27,7 +27,7 @@ function originIsAllowed(origin)
 	{
 		return true;
 	}
-	return aflse;
+	return false;
 }
 
 function broadcast( messageType, currentState )
@@ -157,17 +157,17 @@ app.get('/stopwatch.js', (req, res) =>
 
 app.get('/connect.js', (req, res) =>
 {
-	try {
-	  if (fs.existsSync(__dirname + '/connectLocalHost.js')) {
+	if (fs.existsSync(__dirname + '/connectLocalHost.js'))
+	{
 		////file exists
-		console.log("Connecting to ws://localhost");
+		console.log("/connect.js => /connectLocalHost.js");
 		res.sendFile(__dirname + '/connectLocalHost.js');		
-	  }
-	} catch(err) {
+	}
+	else
+	{
 		console.log("Connecting to ws://snake.city");
 		res.sendFile(__dirname + '/connect.js');
 	}
-	res.sendFile(__dirname + '/connect.js');
 });
 
 app.get('/create.html', (req, res) =>
