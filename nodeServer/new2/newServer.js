@@ -170,9 +170,49 @@ app.get('/connect.js', (req, res) =>
 	}
 });
 
+app.get('/Snake.City_PlayBlueprint.pdf', (req, res) =>
+{
+	res.sendFile(__dirname + '/Snake.City_PlayBlueprint.pdf');
+});
+
 app.get('/create.html', (req, res) =>
 {
 	res.sendFile(__dirname + '/create.html');
+});
+
+app.get('/create2.html', (req, res) =>
+{
+	res.sendFile(__dirname + '/create2.html');
+});
+
+app.get('/create3.html', (req, res) =>
+{
+	res.sendFile(__dirname + '/create3.html');
+});
+
+app.get('/create4.html', (req, res) =>
+{
+	res.sendFile(__dirname + '/create4.html');
+});
+
+app.get('/create5.html', (req, res) =>
+{
+	res.sendFile(__dirname + '/create5.html');
+});
+
+app.get('/create6.html', (req, res) =>
+{
+	res.sendFile(__dirname + '/create6.html');
+});
+
+app.get('/create7.html', (req, res) =>
+{
+	res.sendFile(__dirname + '/create7.html');
+});
+
+app.get('/create8.html', (req, res) =>
+{
+	res.sendFile(__dirname + '/create8.html');
 });
 
 app.get('/game.css', (req, res) =>

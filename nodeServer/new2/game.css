@@ -14,7 +14,7 @@ body {
     /* Likely future */
     overflow: hidden;
     background-color: black;
-    font-family: 'Sarpanch', Arial, Helvetica, sans-serif;
+    font-family: 'Sarpanch', 'Lato', Arial, Helvetica, sans-serif;
     color: blanchedalmond;
 }
 
@@ -24,9 +24,10 @@ body {
 }
 
 #bodytext {
+	font-family: 'Sarpanch', Arial, Helvetica, sans-serif;
     font-style: normal;
 	font-weight: normal;	
-	font-size: 10px;
+	font-size: 12px;
     text-align: center;
 }
 
