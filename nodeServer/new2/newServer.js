@@ -30,13 +30,14 @@ function originIsAllowed(origin)
 	return false;
 }
 
-function broadcast( messageType, currentState )
+function broadcast( messageType, currentState, snake )
 {		
     let numPlayers = Object.entries(whosPlaying).length;
 	
 	var data = { messageType : messageType,
 				 currentState : currentState,
-				 numPlayers : numPlayers };
+				 numPlayers : numPlayers,
+				 snake : snake };
 	var msg = JSON.stringify(data);
 	
 	console.log( "Broadcasting message: " + msg );
@@ -141,7 +142,7 @@ wsServer.on('request', function(request)
 				// When a client loads the web page and a connection accepted is received it will send a hello to the server
 				// The server will respond by telling all clients someone has joined - this is used to show the number of connected devices
 				// on the client
-				broadcast( "update", null );
+				broadcast( "update", null, snakeID.snakeName );
 			}
 			else if( message.utf8Data == "waiting" )
 			{
@@ -159,7 +160,7 @@ wsServer.on('request', function(request)
 				
 				if( everyoneWaiting )
 				{
-					broadcast( "state", "connected" );
+					broadcast( "state", "connected", snakeID.snakeName );
 				}
 				else
 				{
@@ -168,7 +169,7 @@ wsServer.on('request', function(request)
 			}
 			else if( message.utf8Data == "paused" )
 			{
-				broadcast( "state", "paused" );				
+				broadcast( "state", "paused", snakeID.snakeName );				
 			}
 			//when restart button is pressed
 			else if( message.utf8Data == "initiated" )
@@ -179,7 +180,7 @@ wsServer.on('request', function(request)
 				{
 					value['currentState'] = "initiated"
 				}
-				broadcast( "state", "initiated" );	
+				broadcast( "state", "initiated", snakeID.snakeName );	
 			}
         }
     });

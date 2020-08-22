@@ -16,6 +16,8 @@ const BUTTON = {
     'NONE': 'NONE'
 }
 
+var ws;
+
 //This states below might be useful in sending via socket io
 let currentSTATE = STATE.INITIATE;
 let currentBUTTON = BUTTON.NONE;
@@ -161,7 +163,7 @@ function stateManage() {
     renderGame(currentSTATE);
 }
 
-function onOpen()
+function onOpen ( socket )
 {
 	ws.send(STATE.HELLO);
 }
@@ -170,20 +172,23 @@ function onMessage (e) {
     if (typeof e.data === 'string') {
         console.log("Received from server: " + e.data);
 
-        var objects = JSON.parse(e.data);
+        var object = JSON.parse(e.data);
 
-        if (objects['messageType'] == "update") {
-            numPlayers = objects['numPlayers'];				// Update the number of players
-            updatePlayers(numPlayers);
+        if (object['messageType'] == "update") {
+            updatePlayers(object);
         }
-        else if (objects['messageType'] == "state") {
-            currentSTATE = objects['currentState'];			// Update our state
+        else if (object['messageType'] == "state") {
+            currentSTATE = object['currentState'];			// Update our state
         }
         renderGame(currentSTATE);
     }
 };
 
-function updatePlayers(numPlayers) {
+function updatePlayers(object) {
+
+	var numPlayers = object['numPlayers'];
+	var snakeID = object['snake'];
+
     console.log("People info: " + numPlayers);
 
     //Change colors based on the number of people.
@@ -191,7 +196,14 @@ function updatePlayers(numPlayers) {
     buttonA.style.backgroundColor = `hsl(${colorchange},100%,50%)`;
     buttonB.style.backgroundColor = `hsl(${colorchange},100%,50%)`;
     rectangle.style.backgroundColor = `hsl(${colorchange},80%,50%)`;
-    phoneNum.innerHTML = "Connected devices : " + numPlayers;
+	if( numPlayers == 1 )
+	{
+		phoneNum.innerHTML = snakeID + " is " + numPlayers + " player long";
+	}
+	else
+	{
+		phoneNum.innerHTML = snakeID + " is " + numPlayers + " players long";
+	}
 }
 
 function renderGame(state) {
