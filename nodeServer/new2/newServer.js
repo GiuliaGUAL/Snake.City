@@ -47,6 +47,48 @@ function broadcast( messageType, currentState )
 	}
 }
 
+/**
+ * https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Math/random
+ * Returns a random integer between min (inclusive) and max (inclusive).
+ * The value is no lower than min (or the next integer greater than min
+ * if min isn't an integer) and no greater than max (or the next integer
+ * lower than max if max isn't an integer).
+ * Using Math.round() will give you a non-uniform distribution!
+ */
+function getRandomInt(min, max)
+{
+    min = Math.ceil(min);
+    max = Math.floor(max);
+    return Math.floor(Math.random() * (max - min + 1)) + min;
+}
+
+function padToFour(number) {
+  if (number<=9999) { number = ("000"+number).slice(-4); }
+  return number;
+}
+
+var snakeColours = [ "Blue", "Red", "Black", "Yellow", "White", "Grey", "Purple", "Brown" ];
+var snakeNames = [ "Mamba", "Cobra", "Asp", "Adder", "Krait", "Grass snake", "Corn", "Boa", "Copperhead", "Reef snake" ];
+
+// We could just use any unique ID for the snake - but that would be boring
+function getSnakeID()
+{
+	// Calculate the snake name
+	var snakeNameIndex = getRandomInt( 0, snakeNames.length - 1 );
+	var snakeColourIndex = getRandomInt( 0, snakeColours.length - 1 );	
+	var snakeName = snakeNames[snakeNameIndex];
+	var snakeColour = snakeColours[snakeColourIndex];
+	var snake = snakeColour + " " + snakeName;
+	
+	// Make up a password
+	var passInt = getRandomInt( 0, 9999 );
+	var pass = padToFour(passInt);
+	
+	var snake = { snakeName : snakeColour + " " + snakeName,
+				  snakePassword : pass};
+	return snake;
+}
+
 wsServer.on('request', function(request)
 {
 	console.log( "New web server request: " + request.origin);
@@ -54,7 +96,7 @@ wsServer.on('request', function(request)
 	{
       // Make sure we only accept requests from an allowed origin
       request.reject();
-      console.log((new Date()) + ' Connection from origin ' + request.origin + ' rejected.');
+      console.log((new Date()) + ' Attempted connection from origin ' + request.origin + ' rejected.');
       return;
     }
 	else
@@ -66,19 +108,21 @@ wsServer.on('request', function(request)
     var connection = request.accept('echo-protocol', request.origin);
 		
 	// Assign our own ID
-	connection.id = uuid();	
-
+	connection.id = uuid();
+	
 	console.log((new Date()) + ' Connection accepted given id = ' + connection.id);
+	
+	// Assign the snake ID
+	var snakeID = getSnakeID();	
+	console.log( "Snake : " + snakeID.snakeName + " " + snakeID.snakePassword );
 	
 	// Add a player
 	//   adding the connection
 	//   add a blank state for them to be filled later
 	whosPlaying[connection.id] = { connection : connection,
-								   currentState : "" };
+								   currentState : ""
+								 };
 								   
-    // Tell all the clients someone has joined								   
-	broadcast( "update", null );
-
 	// Respond to a message
 	connection.on('message', function(message)
 	{
@@ -91,8 +135,15 @@ wsServer.on('request', function(request)
 			// Update the state
 			whosPlaying[connection.id]['currentState'] = message.utf8Data;
 			
-			// Do snake logic here
-			if( message.utf8Data == "waiting" )
+			// 
+			if( message.utf8Data == "hello" )
+			{
+				// When a client loads the web page and a connection accepted is received it will send a hello to the server
+				// The server will respond by telling all clients someone has joined - this is used to show the number of connected devices
+				// on the client
+				broadcast( "update", null );
+			}
+			else if( message.utf8Data == "waiting" )
 			{
 				// Check all clients are waiting
 				var everyoneWaiting = true;
@@ -124,7 +175,8 @@ wsServer.on('request', function(request)
 			{
 				//Tomo: changing the state of all the connection to initiated on server
 				//Maybe better way of doing this?
-				for (let [key, value] of Object.entries(whosPlaying)){
+				for (let [key, value] of Object.entries(whosPlaying))
+				{
 					value['currentState'] = "initiated"
 				}
 				broadcast( "state", "initiated" );	
@@ -178,41 +230,6 @@ app.get('/Snake.City_PlayBlueprint.pdf', (req, res) =>
 app.get('/create.html', (req, res) =>
 {
 	res.sendFile(__dirname + '/create.html');
-});
-
-app.get('/create2.html', (req, res) =>
-{
-	res.sendFile(__dirname + '/create2.html');
-});
-
-app.get('/create3.html', (req, res) =>
-{
-	res.sendFile(__dirname + '/create3.html');
-});
-
-app.get('/create4.html', (req, res) =>
-{
-	res.sendFile(__dirname + '/create4.html');
-});
-
-app.get('/create5.html', (req, res) =>
-{
-	res.sendFile(__dirname + '/create5.html');
-});
-
-app.get('/create6.html', (req, res) =>
-{
-	res.sendFile(__dirname + '/create6.html');
-});
-
-app.get('/create7.html', (req, res) =>
-{
-	res.sendFile(__dirname + '/create7.html');
-});
-
-app.get('/create8.html', (req, res) =>
-{
-	res.sendFile(__dirname + '/create8.html');
 });
 
 app.get('/game.css', (req, res) =>

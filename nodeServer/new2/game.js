@@ -1,5 +1,6 @@
 
 const STATE = {
+	'HELLO': 'hello',
     'INITIATE': 'initiated',
     'START': 'started',
     'WAIT': 'waiting',
@@ -60,8 +61,6 @@ function startup() {
     buttonB.addEventListener("mouseup", touchEndB, false);
 
     buttonStateUpdate();
-    //touchCancel handles a case where the users finger has slipped to the browser etc...
-    //buttonA.addEventListener("touchmove", handleMove, false);
 }
 
 //Function that is called when restart button is pressed at the end.
@@ -162,9 +161,14 @@ function stateManage() {
     renderGame(currentSTATE);
 }
 
-ws.onmessage = function (e) {
+function onOpen()
+{
+	ws.send(STATE.HELLO);
+}
+
+function onMessage (e) {
     if (typeof e.data === 'string') {
-        console.log("Recevied from server: " + e.data);
+        console.log("Received from server: " + e.data);
 
         var objects = JSON.parse(e.data);
 
