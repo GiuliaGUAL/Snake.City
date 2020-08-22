@@ -100,10 +100,9 @@ wsServer.on('request', function(request)
       console.log((new Date()) + ' Attempted connection from origin ' + request.origin + ' rejected.');
       return;
     }
-	else
-	{
-		console.log((new Date()) + ' Connection from origin ' + request.origin);
-	}
+
+	// Every time the web page is loaded we get a valid connection here
+	console.log((new Date()) + ' Connection from origin ' + request.origin);
 	
 	// Accept the connection
     var connection = request.accept('echo-protocol', request.origin);
@@ -111,6 +110,7 @@ wsServer.on('request', function(request)
 	// Assign our own ID
 	connection.id = uuid();
 	
+	// Debug this connection
 	console.log((new Date()) + ' Connection accepted given id = ' + connection.id);
 	
 	// Assign the snake ID
@@ -127,62 +127,58 @@ wsServer.on('request', function(request)
 	// Respond to a message
 	connection.on('message', function(message)
 	{
-		// https://stackoverflow.com/questions/13364243/websocketserver-node-js-how-to-differentiate-clients
-        if (message.type === 'utf8')
+		// Print out the received message
+        console.log('Received Message: ' + message.utf8Data);
+		
+		// Update the state
+		whosPlaying[connection.id]['currentState'] = message.utf8Data;
+		
+		var messageData = message.utf8Data;
+
+		if( messageData == "hello" )
 		{
-			// Print out the received message
-            console.log('Received Message: ' + message.utf8Data);
+			// When a client loads the web page and a connection accepted is received it will send a hello to the server
+			// The server will respond by telling all clients someone has joined - this is used to show the number of connected devices
+			// on the client
+			broadcast( "update", null, snakeID.snakeName );
+		}
+		if( messageData == "waiting" )
+		{
+			// Check all clients are waiting
+			var everyoneWaiting = true;
 			
-			// Update the state
-			whosPlaying[connection.id]['currentState'] = message.utf8Data;
+			for (let [key, value] of Object.entries(whosPlaying))
+			{
+				console.log("State is : " + value['currentState']);
+				if( value['currentState'] != "waiting" )
+				{
+					everyoneWaiting = false;
+				}
+			}
 			
-			// 
-			if( message.utf8Data == "hello" )
+			if( everyoneWaiting )
 			{
-				// When a client loads the web page and a connection accepted is received it will send a hello to the server
-				// The server will respond by telling all clients someone has joined - this is used to show the number of connected devices
-				// on the client
-				broadcast( "update", null, snakeID.snakeName );
+				broadcast( "state", "connected", snakeID.snakeName );
 			}
-			else if( message.utf8Data == "waiting" )
+			else
 			{
-				// Check all clients are waiting
-				var everyoneWaiting = true;
-				
-				for (let [key, value] of Object.entries(whosPlaying))
-				{
-					console.log("State is : " + value['currentState']);
-					if( value['currentState'] != "waiting" )
-					{
-						everyoneWaiting = false;
-					}
-				}
-				
-				if( everyoneWaiting )
-				{
-					broadcast( "state", "connected", snakeID.snakeName );
-				}
-				else
-				{
-					console.log( "Waiting for connections" );
-				}
+				console.log( "Waiting for connections" );
 			}
-			else if( message.utf8Data == "paused" )
+		}
+		if( messageData == "paused" )
+		{
+			broadcast( "state", "paused", snakeID.snakeName );				
+		}
+		if( messageData == "initiated" )
+		{
+			//Tomo: changing the state of all the connection to initiated on server
+			//Maybe better way of doing this?
+			for (let [key, value] of Object.entries(whosPlaying))
 			{
-				broadcast( "state", "paused", snakeID.snakeName );				
+				value['currentState'] = "initiated"
 			}
-			//when restart button is pressed
-			else if( message.utf8Data == "initiated" )
-			{
-				//Tomo: changing the state of all the connection to initiated on server
-				//Maybe better way of doing this?
-				for (let [key, value] of Object.entries(whosPlaying))
-				{
-					value['currentState'] = "initiated"
-				}
-				broadcast( "state", "initiated", snakeID.snakeName );	
-			}
-        }
+			broadcast( "state", "initiated", snakeID.snakeName );	
+		}
     });
 	
 	// Respond to a close event
