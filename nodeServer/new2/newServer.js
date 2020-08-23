@@ -61,7 +61,7 @@ var snakeColours = [ "Blue", "Red", "Black", "Yellow", "White", "Grey", "Purple"
 var snakeNames = [ "Mamba", "Cobra", "Asp", "Adder", "Krait", "Grass snake", "Corn", "Boa", "Copperhead", "Reef snake" ];
 
 // We could just use any unique ID for the snake - but that would be boring
-function getSnakeID()
+function createNewSnakeID()
 {
 	// Make an interesting snake name
 	var snakeNameIndex = getRandomInt( 0, snakeNames.length - 1 );
@@ -118,9 +118,10 @@ function sendListOfSnakes( connection )
 	connection.send( msg );	
 }
 
-function sendToSnake( snake, messageType, currentState )
+// Count the players in any given snake
+function getPlayersInSnake( snake )
 {	
-	// Count the number of players in this snake
+	// Count the number of players in this snake. We will always send this information
 	let numPlayers = 0;
 	
 	for (let [key, value] of Object.entries(whosPlaying))
@@ -130,11 +131,16 @@ function sendToSnake( snake, messageType, currentState )
 			++numPlayers;
 		}
 	}
-	
+	return numPlayers;
+}
+
+// Send a message to a particular snake
+function sendToSnake( snake, messageType, currentState )
+{	
 	// Make our message packet
 	var data = { messageType : messageType,
 				 currentState : currentState,
-				 numPlayers : numPlayers,
+				 numPlayers : getPlayersInSnake( snake ),
 				 snake : snake.snakeName };
 				 
 	var msg = JSON.stringify(data);
@@ -150,7 +156,30 @@ function sendToSnake( snake, messageType, currentState )
 	}
 }
 
+// Get which snake someone belongs to from their connection
+function getSnakeFromConnection( connection )
+{
+	// Get my entry and my snake
+	let whoAmI = whosPlaying[connection.id];
+
+	// Get my snake
+	let mySnake = whoAmI['snake'];
+	
+	// Return my snake
+	return mySnake;
+}
+
+// Send a message to a player. This is quicker than dealing with snakes as we always have their connection id
 function sendToPlayersSnake( connection, messageType, currentState )
+{
+	let mySnake = getSnakeFromConnection( connection );
+
+	// Send message to all the people in my snake
+	sendToSnake(mySnake, messageType, currentState);
+}
+
+// Update state of a snake by a players connection
+function setStateOfPlayersSnake( connection, newState )
 {
 	// Get my entry and my snake
 	let whoAmI = whosPlaying[connection.id];
@@ -158,7 +187,14 @@ function sendToPlayersSnake( connection, messageType, currentState )
 	// Get my snake
 	let mySnake = whoAmI['snake'];
 
-	sendToSnake(mySnake, messageType, currentState);
+	// Update this snake only
+	for (let [key, value] of Object.entries(whosPlaying))
+	{
+		if( mySnake.snakeUuid == value['snake'].snakeUuid )
+		{
+			value['state'] = newState;
+		}
+	}
 }
 
 wsServer.on('request', function(request)
@@ -205,10 +241,10 @@ wsServer.on('request', function(request)
 		if( messageCommand == "new" )
 		{				
 			// Make a new snake			
-			var snake = getSnakeID();	
+			var snake = createNewSnakeID();	
 			console.log( "Creating new snake: " + snake.snakeUuid + " " + snake.snakeName + " " + snake.snakePassword );
 			
-			// Add a player
+			// Create a new player
 			whosPlaying[connection.id] = { connection : connection,
 										   currentState : null,
 										   snake: snake
@@ -238,7 +274,7 @@ wsServer.on('request', function(request)
 			if( snake == null )
 			{				
 				// Make a new snake	instead		
-				snake = getSnakeID();	
+				snake = createNewSnakeID();	
 
 				// There are no snakes in the system. Make a new snake instead
 				console.log( "Trying to join a snake when there are none.\nCreating new snake: " +
@@ -247,7 +283,7 @@ wsServer.on('request', function(request)
 							snake.snakePassword );
 			}
 			
-			// Set the player
+			// Create a new player
 			whosPlaying[connection.id] = { connection : connection,
 										   currentState : null,
 										   snake: snake
@@ -260,40 +296,39 @@ wsServer.on('request', function(request)
 		
 		if( messageCommand == "initiated" )
 		{
-			// Update the state
-			whosPlaying[connection.id]['currentState'] = messageCommand;
-				
-			//Tomo: changing the state of all the connection to initiated on server
-			//Maybe better way of doing this?
-			for (let [key, value] of Object.entries(whosPlaying))
-			{
-				value['currentState'] = "initiated"
-			}
-
+			console.log( "Resseting everyone in this snake" );
+			setStateOfPlayersSnake( connection, "initiated" );
+			
 			sendToPlayersSnake( connection, "state", "initiated" );		
 		}
-		
-		
+				
 		if( messageCommand == "waiting" )
 		{
-			// Update the state
+			// Update the state of just me
 			whosPlaying[connection.id]['currentState'] = messageCommand;
+
+			// Which snake is this person in
+			let mySnake = getSnakeFromConnection( connection );
 
 			// Check all clients are waiting
 			var everyoneWaiting = true;
 			
 			for (let [key, value] of Object.entries(whosPlaying))
 			{
-				console.log("State is : " + value['currentState']);
-				if( value['currentState'] != "waiting" )
+				// Only check people waiting in my snake
+				if( mySnake.snakeUuid == value['snake'].snakeUuid )
 				{
-					everyoneWaiting = false;
+					console.log("State is : " + value['currentState']);
+					if( value['currentState'] != "waiting" )
+					{
+						everyoneWaiting = false;
+					}
 				}
 			}
 			
 			if( everyoneWaiting )
 			{
-				sendToPlayersSnake( connection, "state", "connected" );		
+				sendToSnake( mySnake, "state", "connected" );		
 			}
 			else
 			{
