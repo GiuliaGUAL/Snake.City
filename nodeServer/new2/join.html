@@ -62,6 +62,8 @@
 				for (let [key, value] of snakes)
 				{
 					snakeNames += value["snakeName"];
+					snakeNames += " ";
+					snakeNames += value["snakeUuid"];						// This is the xxx we send to snake.city/game/xxx
 					snakeNames += "\n"; 
 				}
 

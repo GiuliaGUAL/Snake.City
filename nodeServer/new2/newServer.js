@@ -313,7 +313,7 @@ wsServer.on('request', function(request)
 			
 			for (let [key, value] of Object.entries(whosPlaying))
 			{
-				console.log( "found snake: " + key + " " + value['snake'].snakeUuid + " = " + value['currentState']);
+				//console.log( "found snake: " + key + " " + value['snake'].snakeUuid + " = " + value['currentState']);
 				
 				// Only check people waiting in my snake
 				if( mySnake.snakeUuid == value['snake'].snakeUuid )
