@@ -10,38 +10,6 @@
 	<!-- import the webpage's stylesheet -->
 	<link rel="stylesheet" href="game.css">
 	<link href="https://fonts.googleapis.com/css2?family=Sarpanch:wght@400;600;800&display=swap" rel="stylesheet">
-
-	<script>
-	
-	// Ask for the list of snakes in play
-	function onOpen()
-	{
-		console.log("onOpen");
-		ws.send("list");
-	}
-	
-	// Get the list of snakes and print them on screen
-	function onMessage(e) {
-		if (typeof e.data === 'string')
-		{
-			console.log("Received from server: " + e.data);
-						
-			var x = document.getElementById("snakeId"); 
-			
-			let snakeNames = "";
-			
-			var snakes = JSON.parse(e.data);
-			
-			for (let [key, value] of Object.entries(snakes))
-			{
-				snakeNames += value["snakeName"];
-				snakeNames += "\n"; 
-			}
-
-			x.innerText = snakeNames;
-		}
-	};
-	</script>	
 	
 	<script src="/connect.js" defer></script>
 </head>
@@ -67,6 +35,39 @@
 		</form>	
 
 		<p id="snakeId">There are no snakes to join.</p>
+		
+
+		<script>
+		
+		// Ask for the list of snakes in play
+		function onOpen()
+		{
+			console.log("onOpen");
+			ws.send("list");
+		}
+		
+		// Get the list of snakes and print them on screen
+		function onMessage(e) {
+			if (typeof e.data === 'string')
+			{
+				console.log("Received from server: " + e.data);
+							
+				var x = document.getElementById("snakeId"); 
+				
+				let snakeNames = "";
+				
+				var snakes = Object.entries( JSON.parse(e.data) );
+									
+				for (let [key, value] of snakes)
+				{
+					snakeNames += value["snakeName"];
+					snakeNames += "\n"; 
+				}
+
+				x.innerText = snakeNames;
+			}
+		};
+		</script>	
   </div>
 
 </body>

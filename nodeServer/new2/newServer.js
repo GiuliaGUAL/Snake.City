@@ -37,24 +37,6 @@ function originIsAllowed(origin)
 	return false;
 }
 
-function broadcast( messageType, currentState, snake )
-{		
-    let numPlayers = Object.entries(whosPlaying).length;
-	
-	var data = { messageType : messageType,
-				 currentState : currentState,
-				 numPlayers : numPlayers,
-				 snake : snake.snakeName };
-	var msg = JSON.stringify(data);
-	
-	console.log( "Broadcasting message: " + msg );
-	
-	for (let [key, value] of Object.entries(whosPlaying))
-	{
-		value[ 'connection' ].send( msg );
-	}
-}
-
 /**
  * https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Math/random
  * Returns a random integer between min (inclusive) and max (inclusive).
@@ -136,6 +118,49 @@ function sendListOfSnakes( connection )
 	connection.send( msg );	
 }
 
+function sendToSnake( snake, messageType, currentState )
+{	
+	// Count the number of players in this snake
+	let numPlayers = 0;
+	
+	for (let [key, value] of Object.entries(whosPlaying))
+	{
+		if( snake.snakeUuid == value['snake'].snakeUuid )
+		{
+			++numPlayers;
+		}
+	}
+	
+	// Make our message packet
+	var data = { messageType : messageType,
+				 currentState : currentState,
+				 numPlayers : numPlayers,
+				 snake : snake.snakeName };
+				 
+	var msg = JSON.stringify(data);
+	console.log( "Broadcasting message: " + msg );
+	
+	// Only send to our snake
+	for (let [key, value] of Object.entries(whosPlaying))
+	{
+		if( snake.snakeUuid == value['snake'].snakeUuid )
+		{
+			value[ 'connection' ].send( msg );
+		}
+	}
+}
+
+function sendToPlayersSnake( connection, messageType, currentState )
+{
+	// Get my entry and my snake
+	let whoAmI = whosPlaying[connection.id];
+
+	// Get my snake
+	let mySnake = whoAmI['snake'];
+
+	sendToSnake(mySnake, messageType, currentState);
+}
+
 wsServer.on('request', function(request)
 {
 	console.log( "New web server request: " + request.origin);
@@ -189,8 +214,7 @@ wsServer.on('request', function(request)
 										   snake: snake
 										 };
 												
-			// Broadcast the snake names
-			broadcast( "update", null, snake );
+			sendToPlayersSnake( connection, "update", null );
 		}
 		
 		// If we want to join an existing snake we need to find that snake
@@ -211,39 +235,28 @@ wsServer.on('request', function(request)
 				}
 			}			
 			
-			if( snake != null )
-			{
-				console.log( "Assigned snake" );
-							
-				// Add a player against an existing snake
-				whosPlaying[connection.id] = { connection : connection,
-											   currentState : null,
-											   snake: snake
-											 };
-				
-				broadcast( "update", null, snake );					
-			}
-			else
-			{
-				// There are no snakes in the system. Make a new snake instead
-				console.log( "Trying to join a snake when there are none" );
-				
-				// Make a new snake			
+			if( snake == null )
+			{				
+				// Make a new snake	instead		
 				snake = getSnakeID();	
-				console.log( "Creating new snake: " + snake.snakeUuid + " " + snake.snakeName + " " + snake.snakePassword );
-				
-				// Add a player
-				whosPlaying[connection.id] = { connection : connection,
-											   currentState : null,
-											   snake: snake
-											 };
-													
-				// Broadcast the snake names
-				broadcast( "update", null, snake );
-			}	
+
+				// There are no snakes in the system. Make a new snake instead
+				console.log( "Trying to join a snake when there are none.\nCreating new snake: " +
+							snake.snakeUuid + " " +
+							snake.snakeName + " " +
+							snake.snakePassword );
+			}
+			
+			// Set the player
+			whosPlaying[connection.id] = { connection : connection,
+										   currentState : null,
+										   snake: snake
+										 };
+							
+			// Broadcast the snake names
+			sendToPlayersSnake( connection, "update", null );		
 		}		
-		
-		
+				
 		
 		if( messageCommand == "initiated" )
 		{
@@ -256,7 +269,8 @@ wsServer.on('request', function(request)
 			{
 				value['currentState'] = "initiated"
 			}
-			broadcast( "state", "initiated", whosPlaying[connection.id]['snake'] );	
+
+			sendToPlayersSnake( connection, "state", "initiated" );		
 		}
 		
 		
@@ -279,23 +293,19 @@ wsServer.on('request', function(request)
 			
 			if( everyoneWaiting )
 			{
-				broadcast( "state", "connected", whosPlaying[connection.id]['snake'] );
+				sendToPlayersSnake( connection, "state", "connected" );		
 			}
 			else
 			{
 				console.log( "Waiting for connections" );
 			}
 		}
-		
-		
+				
 		// This is called when we are waiting for the game to restart - or someone has let go of their phone
 		// force all the players to the new state - paused
 		if( messageCommand == "paused" )
 		{
-			// Update the state
-			whosPlaying[connection.id]['currentState'] = messageCommand;
-
-			broadcast( "state", "paused", whosPlaying[connection.id]['snake'] );				
+			sendToPlayersSnake( connection, "state", "paused" );				
 		}	
     });
 	
@@ -307,16 +317,13 @@ wsServer.on('request', function(request)
 		if( whosPlaying[connection.id] )
 		{
 			let snake = whosPlaying[connection.id]['snake'];
+
+			// Delete the connection from the array
+			delete whosPlaying[connection.id];
 			
-			// Delete the connection
-			delete whosPlaying[connection.id];	
-			
-			if( snake != null )
-			{
-				// Tell all the clients someone has left - this sends a null state so it's not acted on							   
-				broadcast( "update", null, snake );			
-			}
-		}
+			// Tell all the clients someone has left - this sends a null state so it's not acted on							   
+			sendToSnake( snake, "update", null );
+		}		
     });
 });
 
