@@ -2,19 +2,51 @@
 <html lang="en">
 
 <head>
-  <title>Snake.City</title>
-  <meta charset="utf-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+	<title>Snake.City</title>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
 
-  <!-- import the webpage's stylesheet -->
-  <link rel="stylesheet" href="game.css">
-  <link href="https://fonts.googleapis.com/css2?family=Sarpanch:wght@400;600;800&display=swap" rel="stylesheet">
+	<!-- import the webpage's stylesheet -->
+	<link rel="stylesheet" href="game.css">
+	<link href="https://fonts.googleapis.com/css2?family=Sarpanch:wght@400;600;800&display=swap" rel="stylesheet">
 
+	<script>
+	
+	// Ask for the list of snakes in play
+	function onOpen()
+	{
+		console.log("onOpen");
+		ws.send("list");
+	}
+	
+	// Get the list of snakes and print them on screen
+	function onMessage(e) {
+		if (typeof e.data === 'string')
+		{
+			console.log("Received from server: " + e.data);
+						
+			var x = document.getElementById("snakeId"); 
+			
+			let snakeNames = "";
+			
+			var snakes = JSON.parse(e.data);
+			
+			for (let [key, value] of Object.entries(snakes))
+			{
+				snakeNames += value["snakeName"];
+				snakeNames += "\n"; 
+			}
+
+			x.innerText = snakeNames;
+		}
+	};
+	</script>	
+	
+	<script src="/connect.js" defer></script>
 </head>
 
-<body>
-
+<body>	
 	<div id="other">
 		
 		<img src="logo.png" alt="Snake.City" class="logo">
@@ -29,20 +61,14 @@
 		</form>
 			  
 		Select the button below if you want to make a new snake. You will have to tell people your snake name and password.
-		
+			
 		<form action="game">	
 		   <button id="createbutton">START NEW SNAKE</button>  
 		</form>	
-		
-		Select button below if you want to join an existing snake.
-		
-		<form action="game/1">	
-		   <button id="createbutton">JOIN SNAKE</button>  
-		</form>	
+
+		<p id="snakeId">There are no snakes to join.</p>
   </div>
-  
-</h1>
-  <div id="stateText">Viper</div>
+
 </body>
 
 </html>

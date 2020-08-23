@@ -44,7 +44,7 @@ function broadcast( messageType, currentState, snake )
 	var data = { messageType : messageType,
 				 currentState : currentState,
 				 numPlayers : numPlayers,
-				 snake : snake };
+				 snake : snake.snakeName };
 	var msg = JSON.stringify(data);
 	
 	console.log( "Broadcasting message: " + msg );
@@ -81,7 +81,7 @@ var snakeNames = [ "Mamba", "Cobra", "Asp", "Adder", "Krait", "Grass snake", "Co
 // We could just use any unique ID for the snake - but that would be boring
 function getSnakeID()
 {
-	// Calculate the snake name
+	// Make an interesting snake name
 	var snakeNameIndex = getRandomInt( 0, snakeNames.length - 1 );
 	var snakeColourIndex = getRandomInt( 0, snakeColours.length - 1 );	
 	var snakeName = snakeNames[snakeNameIndex];
@@ -92,10 +92,48 @@ function getSnakeID()
 	var passInt = getRandomInt( 0, 9999 );
 	var pass = padToFour(passInt);
 	
-	var snake = { snakeName : snakeColour + " " + snakeName,
-				  snakeUuid : uuid(),
+	var snake = { snakeUuid : uuid(),
+				  snakeName : snakeColour + " " + snakeName,
 				  snakePassword : pass};
 	return snake;
+}
+
+// Get a list of snakes from the running games
+// JSONify this and send it to the clients
+function sendListOfSnakes( connection )
+{
+	var snakeIds = [];				
+	for (let [key, value] of Object.entries(whosPlaying))
+	{
+		let snake = value['snake'];
+		
+		snakeIds.push( snake.snakeUuid );
+	}
+	
+	// Make this list unique
+	uniqueSnakes = [];
+	var uniqueIds = snakeIds.filter((v, i, a) => a.indexOf(v) === i); 	
+
+	for (let [uniqueKey, uniqueSnake] of Object.entries(uniqueIds))			
+	{
+		for (let [key, value] of Object.entries(whosPlaying))
+		{
+			let snake = value['snake'];
+	
+			if( snake.snakeUuid == uniqueSnake )
+			{
+				uniqueSnakes.push( snake );
+				break;
+			}		
+		}					
+	}
+	
+	// Send this to the asking client
+	var msg = JSON.stringify(uniqueSnakes);
+
+	// Send the list of snakes down this connection. Note we are not adding ourselves to the main array
+	// until we join a snake
+	connection.send( msg );	
 }
 
 wsServer.on('request', function(request)
@@ -115,25 +153,19 @@ wsServer.on('request', function(request)
 	// Accept the connection
     var connection = request.accept('echo-protocol', request.origin);
 		
-	// Assign our own ID
+	// Assign our own ID against the connection. This is held against the 
 	connection.id = uuid();
 	
 	// Debug this connection
 	console.log((new Date()) + ' Connection accepted given id = ' + connection.id);
-
-	// Add a player
-	//   adding the connection
-	//   add a blank state for them to be filled later
-	whosPlaying[connection.id] = { connection : connection,
-								   currentState : "",
-								   snake: null
-								 };
-								   
+	
+	// For all new connections - send the list of snakes
+	sendListOfSnakes( connection );
+	
 	// Respond to a message
 	connection.on('message', function(message)
 	{
-		// Print out the received message
-        console.log('Received Message: ' + message.utf8Data);
+		console.log("\r\n");
 		
 		var fullMessageData = message.utf8Data;
 		
@@ -141,25 +173,98 @@ wsServer.on('request', function(request)
  	    var words = fullMessageData.split(" ");
 
 		// Get the command
-		var messageCommand = words[0];
+		var messageCommand = words[0];		
 		
-		// Update the state
-		whosPlaying[connection.id]['currentState'] = messageCommand;
-				
+		// This creates a new snake
+		// It assigns the connection - a null game state and the snake name
 		if( messageCommand == "new" )
 		{				
 			// Make a new snake			
-			var snakeID = getSnakeID();	
-			console.log( "Snake : " + snakeID.snakeName + " " + snakeID.snakePassword );
-	
-			broadcast( "update", null, snakeID.snakeName );
+			var snake = getSnakeID();	
+			console.log( "Creating new snake: " + snake.snakeUuid + " " + snake.snakeName + " " + snake.snakePassword );
+			
+			// Add a player
+			whosPlaying[connection.id] = { connection : connection,
+										   currentState : null,
+										   snake: snake
+										 };
+												
+			// Broadcast the snake names
+			broadcast( "update", null, snake );
 		}
+		
+		// If we want to join an existing snake we need to find that snake
+		// We then create a new entry for a new connection, set the game state to null and assign them to the snake
 		if( messageCommand == "join" )
 		{				
-			broadcast( "update", null, null );
+			console.log( "Looking for snake: " + words[1] + " " + words[2]);
+
+			let snake = null;
+			
+			// Find a snake
+			for (let [key, value] of Object.entries(whosPlaying))
+			{
+				if( value['snake'] != "null" )
+				{
+					snake = value['snake'];
+					break;
+				}
+			}			
+			
+			if( snake != null )
+			{
+				console.log( "Assigned snake" );
+							
+				// Add a player against an existing snake
+				whosPlaying[connection.id] = { connection : connection,
+											   currentState : null,
+											   snake: snake
+											 };
+				
+				broadcast( "update", null, snake );					
+			}
+			else
+			{
+				// There are no snakes in the system. Make a new snake instead
+				console.log( "Trying to join a snake when there are none" );
+				
+				// Make a new snake			
+				snake = getSnakeID();	
+				console.log( "Creating new snake: " + snake.snakeUuid + " " + snake.snakeName + " " + snake.snakePassword );
+				
+				// Add a player
+				whosPlaying[connection.id] = { connection : connection,
+											   currentState : null,
+											   snake: snake
+											 };
+													
+				// Broadcast the snake names
+				broadcast( "update", null, snake );
+			}	
 		}		
+		
+		
+		
+		if( messageCommand == "initiated" )
+		{
+			// Update the state
+			whosPlaying[connection.id]['currentState'] = messageCommand;
+				
+			//Tomo: changing the state of all the connection to initiated on server
+			//Maybe better way of doing this?
+			for (let [key, value] of Object.entries(whosPlaying))
+			{
+				value['currentState'] = "initiated"
+			}
+			broadcast( "state", "initiated", whosPlaying[connection.id]['snake'] );	
+		}
+		
+		
 		if( messageCommand == "waiting" )
 		{
+			// Update the state
+			whosPlaying[connection.id]['currentState'] = messageCommand;
+
 			// Check all clients are waiting
 			var everyoneWaiting = true;
 			
@@ -174,27 +279,24 @@ wsServer.on('request', function(request)
 			
 			if( everyoneWaiting )
 			{
-				broadcast( "state", "connected", null );
+				broadcast( "state", "connected", whosPlaying[connection.id]['snake'] );
 			}
 			else
 			{
 				console.log( "Waiting for connections" );
 			}
 		}
+		
+		
+		// This is called when we are waiting for the game to restart - or someone has let go of their phone
+		// force all the players to the new state - paused
 		if( messageCommand == "paused" )
 		{
-			broadcast( "state", "paused", null );				
-		}
-		if( messageCommand == "initiated" )
-		{
-			//Tomo: changing the state of all the connection to initiated on server
-			//Maybe better way of doing this?
-			for (let [key, value] of Object.entries(whosPlaying))
-			{
-				value['currentState'] = "initiated"
-			}
-			broadcast( "state", "initiated", null );	
-		}
+			// Update the state
+			whosPlaying[connection.id]['currentState'] = messageCommand;
+
+			broadcast( "state", "paused", whosPlaying[connection.id]['snake'] );				
+		}	
     });
 	
 	// Respond to a close event
@@ -202,11 +304,19 @@ wsServer.on('request', function(request)
 	{
         console.log((new Date()) + ' Peer ' + connection.remoteAddress + ' disconnected.' + description);
 		
-		// Delete the connection
-		delete whosPlaying[connection.id];
-		
-		// Tell all the clients someone has left								   
-		broadcast( "update", null );
+		if( whosPlaying[connection.id] )
+		{
+			let snake = whosPlaying[connection.id]['snake'];
+			
+			// Delete the connection
+			delete whosPlaying[connection.id];	
+			
+			if( snake != null )
+			{
+				// Tell all the clients someone has left - this sends a null state so it's not acted on							   
+				broadcast( "update", null, snake );			
+			}
+		}
     });
 });
 
@@ -257,8 +367,8 @@ app.get('/logo.png', (req, res) =>
 
 app.get('/game/:id', function (req, res, next) {
 	
-	console.log('Request URL:' + req.originalUrl);
-	console.log('Request URL:' + req.params.id);
+	console.log('Join snake\nRequest URL:' + req.originalUrl);
+	console.log('Req params:' + req.params.id);
 
 	var data = fs.readFileSync(__dirname + '/game.html', {encoding:'utf8', flag:'r'});
 	var newData = data.replace("NEWGAME_OR_JOIN", "join" );
@@ -267,7 +377,7 @@ app.get('/game/:id', function (req, res, next) {
 
 app.get('/game', function (req, res, next) {
 	
-	console.log('Request URL:' + req.originalUrl);
+	console.log('New snake\nRequest URL:' + req.originalUrl);
 
 	var data = fs.readFileSync(__dirname + '/game.html', {encoding:'utf8', flag:'r'});
 	var newData = data.replace("NEWGAME_OR_JOIN", "new" );
