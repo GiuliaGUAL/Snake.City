@@ -47,14 +47,15 @@
 		}
 		
 		// Get the list of snakes and print them on screen
-		function onMessage(e) {
+		function onMessage(e)
+		{
 			if (typeof e.data === 'string')
 			{
 				console.log("Received from server: " + e.data);
 							
 				var x = document.getElementById("snakeId"); 
 				
-				let snakeNames = "";
+				let snakeNames = "Choose your snake:\n\n";
 				
 				var snakes = Object.entries( JSON.parse(e.data) );
 									
