@@ -163,12 +163,13 @@ function stateManage() {
     renderGame(currentSTATE);
 }
 
-function onOpen ( socket )
+function onOpen( socket )
 {
-	ws.send(STATE.HELLO);
+	console.log("onOpen(socket)");
+	ws.send(FirstCommand);
 }
 
-function onMessage (e) {
+function onMessage(e) {
     if (typeof e.data === 'string') {
         console.log("Received from server: " + e.data);
 
@@ -188,7 +189,7 @@ function updatePlayers(object) {
 
 	var numPlayers = object['numPlayers'];
 	var snakeID = object['snake'];
-
+	
     console.log("People info: " + numPlayers);
 
     //Change colors based on the number of people.

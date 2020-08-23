@@ -1,10 +1,16 @@
+// useful - https://codeforgeek.com/handle-get-post-request-express-4/
+
 var WebSocketServer = require('websocket').server;
 var http = require('http');
 var fs = require('fs');
 
-const { uuid } = require('uuidv4');
-const app = require('express')();
-const server = require('http').Server(app);
+var { uuid } = require('uuidv4');
+
+var express = require('express');
+var router = express.Router();
+var app = express();
+
+var server = require('http').Server(app);
 
 var whosPlaying = {};	// We use this to store useful information keyed by connection id
 
@@ -23,7 +29,8 @@ console.log((new Date()) + ' hosting webserver 2.00');
 function originIsAllowed(origin)
 {
 	if( ( origin == "http://localhost" ) ||
-		( origin == "http://snake.city" ) )
+		( origin == "http://snake.city" ) || 
+		( origin == "http://192.168.1.177" ) ) // Your IP address goes here for debugging
 	{
 		return true;
 	}
@@ -86,6 +93,7 @@ function getSnakeID()
 	var pass = padToFour(passInt);
 	
 	var snake = { snakeName : snakeColour + " " + snakeName,
+				  snakeUuid : uuid(),
 				  snakePassword : pass};
 	return snake;
 }
@@ -112,16 +120,13 @@ wsServer.on('request', function(request)
 	
 	// Debug this connection
 	console.log((new Date()) + ' Connection accepted given id = ' + connection.id);
-	
-	// Assign the snake ID
-	var snakeID = getSnakeID();	
-	console.log( "Snake : " + snakeID.snakeName + " " + snakeID.snakePassword );
-	
+
 	// Add a player
 	//   adding the connection
 	//   add a blank state for them to be filled later
 	whosPlaying[connection.id] = { connection : connection,
-								   currentState : ""
+								   currentState : "",
+								   snake: null
 								 };
 								   
 	// Respond to a message
@@ -130,19 +135,30 @@ wsServer.on('request', function(request)
 		// Print out the received message
         console.log('Received Message: ' + message.utf8Data);
 		
-		// Update the state
-		whosPlaying[connection.id]['currentState'] = message.utf8Data;
+		var fullMessageData = message.utf8Data;
 		
-		var messageData = message.utf8Data;
+		// Deconstruct the string into strings
+ 	    var words = fullMessageData.split(" ");
 
-		if( messageData == "hello" )
-		{
-			// When a client loads the web page and a connection accepted is received it will send a hello to the server
-			// The server will respond by telling all clients someone has joined - this is used to show the number of connected devices
-			// on the client
+		// Get the command
+		var messageCommand = words[0];
+		
+		// Update the state
+		whosPlaying[connection.id]['currentState'] = messageCommand;
+				
+		if( messageCommand == "new" )
+		{				
+			// Make a new snake			
+			var snakeID = getSnakeID();	
+			console.log( "Snake : " + snakeID.snakeName + " " + snakeID.snakePassword );
+	
 			broadcast( "update", null, snakeID.snakeName );
 		}
-		if( messageData == "waiting" )
+		if( messageCommand == "join" )
+		{				
+			broadcast( "update", null, null );
+		}		
+		if( messageCommand == "waiting" )
 		{
 			// Check all clients are waiting
 			var everyoneWaiting = true;
@@ -158,18 +174,18 @@ wsServer.on('request', function(request)
 			
 			if( everyoneWaiting )
 			{
-				broadcast( "state", "connected", snakeID.snakeName );
+				broadcast( "state", "connected", null );
 			}
 			else
 			{
 				console.log( "Waiting for connections" );
 			}
 		}
-		if( messageData == "paused" )
+		if( messageCommand == "paused" )
 		{
-			broadcast( "state", "paused", snakeID.snakeName );				
+			broadcast( "state", "paused", null );				
 		}
-		if( messageData == "initiated" )
+		if( messageCommand == "initiated" )
 		{
 			//Tomo: changing the state of all the connection to initiated on server
 			//Maybe better way of doing this?
@@ -177,7 +193,7 @@ wsServer.on('request', function(request)
 			{
 				value['currentState'] = "initiated"
 			}
-			broadcast( "state", "initiated", snakeID.snakeName );	
+			broadcast( "state", "initiated", null );	
 		}
     });
 	
@@ -239,22 +255,34 @@ app.get('/logo.png', (req, res) =>
 	res.sendFile(__dirname + '/logo.png');
 });
 
-app.get('/game.html', (req, res) =>
-{
-	res.sendFile(__dirname + '/game.html');
-});
+app.get('/game/:id', function (req, res, next) {
+	
+	console.log('Request URL:' + req.originalUrl);
+	console.log('Request URL:' + req.params.id);
+
+	var data = fs.readFileSync(__dirname + '/game.html', {encoding:'utf8', flag:'r'});
+	var newData = data.replace("NEWGAME_OR_JOIN", "join" );
+	res.send(newData);
+})
+
+app.get('/game', function (req, res, next) {
+	
+	console.log('Request URL:' + req.originalUrl);
+
+	var data = fs.readFileSync(__dirname + '/game.html', {encoding:'utf8', flag:'r'});
+	var newData = data.replace("NEWGAME_OR_JOIN", "new" );
+	res.send(newData);
+})
 
 app.get('/game.js', (req, res) =>
 {
 	res.sendFile(__dirname + '/game.js');
 });
 
-
 app.get('/covid.html', (req, res) =>
 {
 	res.sendFile(__dirname + '/covid.html');
 });
-
 
 app.get('/join.html', (req, res) =>
 {
