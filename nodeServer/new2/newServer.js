@@ -406,13 +406,13 @@ app.get('/logo.png', (req, res) =>
 	res.sendFile(__dirname + '/logo.png');
 });
 
-app.get('/game/:id', function (req, res, next) {
+app.get('/game/:id/:password', function (req, res, next) {
 	
 	console.log('Join snake\nRequest URL:' + req.originalUrl);
-	console.log('Req params:' + req.params.id);
+	console.log('Req params:' + req.params.id + " " + req.params.password);
 
 	var data = fs.readFileSync(__dirname + '/game.html', {encoding:'utf8', flag:'r'});
-	var newData = data.replace("NEWGAME_OR_JOIN", "join" );
+	var newData = data.replace("NEWGAME_OR_JOIN", "join " + req.params.id + " " + req.params.password);
 	res.send(newData);
 })
 
