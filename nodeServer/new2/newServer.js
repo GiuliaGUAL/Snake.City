@@ -256,7 +256,10 @@ wsServer.on('request', function(request)
 		// We then create a new entry for a new connection, set the game state to null and assign them to the snake
 		if( messageCommand == "join" )
 		{				
-			console.log( "Looking for snake: " + words[1] + " " + words[2]);
+			let snakeId = words[1];
+			let password = words[2];
+			
+			console.log( "Looking for snake: " + snakeId + " " + password );
 
 			// Find a snake
 			for (let [key, value] of Object.entries(whosPlaying))
