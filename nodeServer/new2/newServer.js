@@ -146,6 +146,7 @@ function sendToSnake( snake, messageType, currentState )
 				 currentState : currentState,
 				 numPlayers : getPlayersInSnake( snake ),
 				 snake : snake.snakeName,
+				 snakeUuid : snake.snakeUuid,
 				 snakePass : snake.snakePassword };
 				 
 	var msg = JSON.stringify(data);

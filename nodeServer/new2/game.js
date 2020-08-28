@@ -189,9 +189,11 @@ function updatePlayers(object) {
 
 	var numPlayers = object['numPlayers'];
 	var snakeName = object['snake'];
+	var snakeUuid = object['snakeUuid'];
 	var snakePass = object['snakePass'];
 	
     console.log("People info: " + numPlayers);
+	console.log("Snake Uuid: " + snakeUuid);
 
     //Change colors based on the number of people.
     let colorchange = numPlayers * 60;
