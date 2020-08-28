@@ -266,8 +266,23 @@ wsServer.on('request', function(request)
 			{
 				if( value['snake'] != "null" )
 				{
-					mySnake = value['snake'];
-					break;
+					let foundSnake = value['snake'];
+					
+					if( foundSnake.snakeUuid == snakeId )
+					{
+						console.log( "Found uuid: " + snakeId );
+						
+						if( foundSnake.snakePassword == password )
+						{
+							console.log( "Matched password: " + password );
+							mySnake = foundSnake;
+							break;
+						}
+						else
+						{
+							console.log( "Did not match password :" + password + " with snake password " + foundSnake.snakePassword );
+						}
+					}
 				}
 			}			
 			
@@ -277,7 +292,7 @@ wsServer.on('request', function(request)
 				mySnake = createNewSnakeID();	
 
 				// There are no snakes in the system. Make a new snake instead
-				console.log( "Trying to join a snake when there are none.\nCreating new snake: " +
+				console.log( "Couldn't join snake.\nCreating new snake: " +
 							mySnake.snakeUuid + " " +
 							mySnake.snakeName + " " +
 							mySnake.snakePassword );
