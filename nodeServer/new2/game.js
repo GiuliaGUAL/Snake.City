@@ -188,7 +188,8 @@ function onMessage(e) {
 function updatePlayers(object) {
 
 	var numPlayers = object['numPlayers'];
-	var snakeID = object['snake'];
+	var snakeName = object['snake'];
+	var snakePass = object['snakePass'];
 	
     console.log("People info: " + numPlayers);
 
@@ -199,11 +200,11 @@ function updatePlayers(object) {
     rectangle.style.backgroundColor = `hsl(${colorchange},80%,50%)`;
 	if( numPlayers == 1 )
 	{
-		phoneNum.innerHTML = snakeID + " is " + numPlayers + " player long";
+		phoneNum.innerHTML = snakeName + " is " + numPlayers + " player long. Use password: " + snakePass;
 	}
 	else
 	{
-		phoneNum.innerHTML = snakeID + " is " + numPlayers + " players long";
+		phoneNum.innerHTML = snakeName + " is " + numPlayers + " players long. Use password: " + snakePass;
 	}
 }
 

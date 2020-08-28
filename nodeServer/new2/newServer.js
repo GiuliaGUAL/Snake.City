@@ -145,7 +145,8 @@ function sendToSnake( snake, messageType, currentState )
 	var data = { messageType : messageType,
 				 currentState : currentState,
 				 numPlayers : getPlayersInSnake( snake ),
-				 snake : snake.snakeName };
+				 snake : snake.snakeName,
+				 snakePass : snake.snakePassword };
 				 
 	var msg = JSON.stringify(data);
 	
