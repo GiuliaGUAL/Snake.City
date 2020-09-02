@@ -34,8 +34,9 @@
 		   <button id="createbutton">START NEW SNAKE</button>  
 		</form>	
 
+		<div id="otherSnake">
 		<p id="snakeId">There are no snakes to join.</p>
-		
+		</div>
 
 		<script>
 		
@@ -54,21 +55,31 @@
 				console.log("Received from server: " + e.data);
 							
 				var x = document.getElementById("snakeId"); 
-				
+
 				let snakeNames = "Choose your snake:\n\n";
+				let snakeURLs = "";
 				
 				var snakes = Object.entries( JSON.parse(e.data) );
 									
 				for (let [key, value] of snakes)
 				{
-					snakeNames += value["snakeName"];
-					snakeNames += " ";
-					snakeNames += value["snakeUuid"];						// This is the xxx we send to snake.city/game/xxx
-					snakeNames += "\n"; 
-				}
+					snakeNames = value["snakeName"];
 
-				x.innerText = snakeNames;
+					snakeURLs += value["snakeUuid"];
+					snakeURLs += value["snakePass"];
+
+					let linkHTML = document.createElement("a");
+					let nameHTML = document.createTextNode(snakeNames);
+					linkHTML.appendChild(nameHTML);
+					linkHTML.title = snakeNames;
+					linkHTML.href = snakeURLs;
+
+					let element = document.getElementById("otherSnake");
+					element.appendChild(linkHTML);
+				}
+				x.innerText = "Click on the snake to join";
 			}
+
 		};
 		</script>	
   </div>
