@@ -10,80 +10,109 @@
 	<!-- import the webpage's stylesheet -->
 	<link rel="stylesheet" href="game.css">
 	<link href="https://fonts.googleapis.com/css2?family=Sarpanch:wght@400;600;800&display=swap" rel="stylesheet">
-	
+
 	<script src="/connect.js" defer></script>
 </head>
 
-<body>	
+<body>
 	<div id="other">
-		
+
 		<img src="logo.png" alt="Snake.City" class="logo">
-	  
-		
+
+
 		<div id="bodytext">
 
-		We are living in unprecedented times. The team behind this website would like you to read these important words first.
+			We are living in unprecedented times. The team behind this website would like you to read these important
+			words first.
 
-		<form action="covid.html">
-		<button id="covidbutton">COVID AND SNAKERS</button>  
-		</form>
-			  
-		Select the button below if you want to make a new snake. You will have to tell people your snake name and password.
-			
-		<form action="game">	
-		   <button id="createbutton">START NEW SNAKE</button>  
-		</form>	
+			<form action="covid.html">
+				<button id="covidbutton">COVID AND SNAKERS</button>
+			</form>
 
-		<div id="otherSnake">
-		<p id="snakeId">There are no snakes to join.</p>
+			Select the button below if you want to make a new snake. You will have to tell people your snake name and
+			password.
+
+			<form action="game">
+				<button id="createbutton">START NEW SNAKE</button>
+			</form>
+
+			<div id="otherSnake">
+				<p id="snakeId">There are no snakes to join.</p>
+			</div>
+
+			<script>
+
+				// Ask for the list of snakes in play
+				function onOpen() {
+					console.log("onOpen");
+					ws.send("list");
+				}
+
+				// Get the list of snakes and print them on screen
+				function onMessage(e) {
+					if (typeof e.data === 'string') {
+						console.log("Received from server: " + e.data);
+
+						var x = document.getElementById("snakeId");
+
+						var snakes = Object.entries(JSON.parse(e.data));
+
+						for (let [key, value] of snakes) {
+							//Get name of the snake
+							let snakeNames = value["snakeName"];
+							let playerNumber = value["numPlayers"]; 
+							let snakePassword = value["snakePassword"];
+							let snakeURLs = "http://snake.city/game/" + value["snakeUuid"] + "/" ;
+							
+							//Create a a-HTML element for each available room
+							let snakeJoin = document.createElement("div");
+							snakeJoin.setAttribute("id", "snakeid");
+
+							//Assign Name to the newly created div element
+							let nameHTML = document.createTextNode(snakeNames + " - Number of players : " + playerNumber);
+							snakeJoin.appendChild(nameHTML);
+
+							//attach function that activates on click
+							snakeJoin.addEventListener('click', function() {
+   							passwordInput(snakeURLs, snakePassword);
+							});
+
+							//Append it the original HTML
+							let element = document.getElementById("otherSnake");
+							element.appendChild(snakeJoin);
+						}
+						x.innerText = "Click on the snake to join";
+					}
+
+				};
+
+				function passwordInput(url, pass) {
+					let inputPassword = prompt("Enter the 4 digit number password to join this session", "****");
+					switch (inputPassword) {
+						case pass:
+							window.location.replace(url + pass);
+							break;
+						default:
+						window.location.replace("http://snake.city")
+
+					}
+				};
+
+			</script>
 		</div>
 
-		<script>
-		
-		// Ask for the list of snakes in play
-		function onOpen()
-		{
-			console.log("onOpen");
-			ws.send("list");
-		}
-		
-		// Get the list of snakes and print them on screen
-		function onMessage(e)
-		{
-			if (typeof e.data === 'string')
-			{
-				console.log("Received from server: " + e.data);
-							
-				var x = document.getElementById("snakeId"); 
-
-				let snakeNames = "Choose your snake:\n\n";
-				let snakeURLs = "";
-				
-				var snakes = Object.entries( JSON.parse(e.data) );
-									
-				for (let [key, value] of snakes)
-				{
-					snakeNames = value["snakeName"];
-
-					snakeURLs += value["snakeUuid"];
-					snakeURLs += value["snakePass"];
-
-					let linkHTML = document.createElement("a");
-					let nameHTML = document.createTextNode(snakeNames);
-					linkHTML.appendChild(nameHTML);
-					linkHTML.title = snakeNames;
-					linkHTML.href = snakeURLs;
-
-					let element = document.getElementById("otherSnake");
-					element.appendChild(linkHTML);
-				}
-				x.innerText = "Click on the snake to join";
-			}
-
-		};
-		</script>	
-  </div>
-
 </body>
+
+<style>
+    #snakeid {
+      color: white;
+      padding: 10px;
+	  margin-bottom: 10px;
+	  border: 1px solid white;
+	  border-radius: 15px;
+      text-align: center;
+      cursor: pointer;
+    }
+</style>
 
 </html>

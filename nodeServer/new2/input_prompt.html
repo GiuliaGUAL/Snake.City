@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+<body>
+
+
+<div id="otherSnake">
+</div>
+
+
+<script>
+
+let p1 = "http://www.w3schools.com"
+let p2 = "2334"
+
+let snakeJoin = document.createElement("div");
+snakeJoin.setAttribute("id", "snakeid");
+
+let nameHTML = document.createTextNode("dddsasadasdasdadsada");
+snakeJoin.appendChild(nameHTML);
+
+//Append it the original HTML
+let element = document.getElementById("otherSnake");
+element.appendChild(snakeJoin);
+
+snakeJoin.addEventListener('click', function() {
+    passwordInput(p1, p2);
+});
+
+
+function passwordInput(url, pass) {
+  let inputPassword = prompt("Enter the 4 digit number password to join this session", "****");
+  switch(inputPassword) {
+    case pass:
+    window.location.replace(p1 );
+      break;
+    default:
+    window.location.replace("http://www.tomokihara.com");
+  }
+}
+
+</script>
+
+
+</body>
+
+
+<style>
+    #snakeid {
+      color: black;
+      padding: 10px;
+      background-color:lightgoldenrodyellow ;
+      text-align: center;
+      cursor: pointer;
+    }
+</style>
+</html>

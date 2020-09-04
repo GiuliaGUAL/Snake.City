@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<title>Snake.City</title>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+
+	<!-- import the webpage's stylesheet -->
+	<link rel="stylesheet" href="game.css">
+	<link href="https://fonts.googleapis.com/css2?family=Sarpanch:wght@400;600;800&display=swap" rel="stylesheet">
+	
+	<script src="/connect.js" defer></script>
+</head>
+
+<body>	
+	<div id="other">
+		
+		<img src="logo.png" alt="Snake.City" class="logo">
+	  
+		
+		<div id="bodytext">
+
+		We are living in unprecedented times. The team behind this website would like you to read these important words first.
+
+		<form action="covid.html">
+		<button id="covidbutton">COVID AND SNAKERS</button>  
+		</form>
+			  
+		Select the button below if you want to make a new snake. You will have to tell people your snake name and password.
+			
+		<form action="game">	
+		   <button id="createbutton">START NEW SNAKE</button>  
+		</form>	
+
+		<p id="snakeId">There are no snakes to join.</p>
+		
+
+		<script>
+		
+		// Ask for the list of snakes in play
+		function onOpen()
+		{
+			console.log("onOpen");
+			ws.send("list");
+		}
+		
+		// Get the list of snakes and print them on screen
+		function onMessage(e)
+		{
+			if (typeof e.data === 'string')
+			{
+				console.log("Received from server: " + e.data);
+							
+				var x = document.getElementById("snakeId"); 
+				
+				let snakeNames = "Join an existing snake:\n\n";
+				
+				var snakes = Object.entries( JSON.parse(e.data) );
+									
+				for (let [key, value] of snakes)
+				{
+					snakeNames += value["snakeName"];
+					snakeNames += "\n"; 
+					snakeNames += " ";
+					snakeNames += "http://snake.city/game/" + value["snakeUuid"] + "/";						// This is the xxx we send to snake.city/game/xxx
+					snakeNames += "\n\n"; 
+					
+					console.log( value["snakeUuid"] );
+				}
+				
+				// input box - gets password = saves it in $pass;
+				// href = goto snake.city/value["snakeUuid"]/$pass
+
+				x.innerText = snakeNames;			
+			}
+		};
+		</script>	
+  </div>
+
+</body>
+
+</html>
