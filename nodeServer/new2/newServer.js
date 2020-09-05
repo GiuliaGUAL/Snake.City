@@ -57,29 +57,12 @@ function padToFour(number) {
   return number;
 }
 
-var snakeColours = [ "Blue", "Red", "Black", "Yellow", "White", "Grey", "Purple", "Brown" ];
+var snakeColours = [ "Blue", "Red", "Black", "Yellow", "White", "Grey", "Purple", "Brown", "Orange", "Green", "Brown", "Sandy", "Turquoise" ];
 
 var snakeNames = [ "Mamba", "Cobra", "Asp", "Adder", "Krait", "Grass snake",
 				   "Corn", "Boa", "Copperhead", "Reef snake", "Sand adder",
-				   "Puff adder", "Anaconda", "Bird snake"
+				   "Puff adder", "Anaconda", "Bird snake", "Viper"
 				   ];
-
-
-// Count the players in any given snake
-function getPlayersInSnake( snake )
-{	
-	// Count the number of players in this snake. We will always send this information
-	let numPlayers = 0;
-	
-	for (let [key, value] of Object.entries(whosPlaying))
-	{
-		if( snake.snakeUuid == value['snake'].snakeUuid )
-		{
-			++numPlayers;
-		}
-	}
-	return numPlayers;
-}
 
 // We could just use any unique ID for the snake - but that would be boring
 function createNewSnakeID()
@@ -95,11 +78,10 @@ function createNewSnakeID()
 	var passInt = getRandomInt( 0, 9999 );
 	var pass = padToFour(passInt);
 	
-	var funRecognisableSnakeName = snakeColour + " " + snakeName;
-	
-	snake = { snakeUuid : uuid(),
-			  snakeName : funRecognisableSnakeName,
-			  snakePassword : pass };
+	var snake = { snakeUuid : uuid(),
+				  snakeName : snakeColour + " " + snakeName,
+				  snakePassword : pass,
+				  numPlayers : 1};
 	return snake;
 }
 
@@ -127,10 +109,7 @@ function sendListOfSnakes( connection )
 	
 			if( snake.snakeUuid == uniqueSnake )
 			{
-				var numPlayers = getPlayersInSnake( snake );
-				
-				snake.numPlayers = numPlayers;
-	
+				snake.numPlayers = getPlayersInSnake( snake );
 				uniqueSnakes.push( snake );
 				break;
 			}		
@@ -143,6 +122,22 @@ function sendListOfSnakes( connection )
 	// Send the list of snakes down this connection. Note we are not adding ourselves to the main array
 	// until we join a snake
 	connection.send( msg );	
+}
+
+// Count the players in any given snake
+function getPlayersInSnake( snake )
+{	
+	// Count the number of players in this snake. We will always send this information
+	let numPlayers = 0;
+	
+	for (let [key, value] of Object.entries(whosPlaying))
+	{
+		if( snake.snakeUuid == value['snake'].snakeUuid )
+		{
+			++numPlayers;
+		}
+	}
+	return numPlayers;
 }
 
 // Send a message to a particular snake
