@@ -1,3 +1,12 @@
+
+@font-face {
+    font-family: 'fleuronregular';
+    src: url('fonts/fleuronregular-webfont.woff2') format('woff2'),
+         url('fonts/fleuronregular-webfont.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+}
+
 body {
 	width: 80%;
     margin: auto;
@@ -14,8 +23,26 @@ body {
     /* Likely future */
     overflow: hidden;
     background-color: black;
-    font-family: 'Sarpanch', 'Lato', Arial, Helvetica, sans-serif;
+    font-family: 'fleuronregular', Arial, Helvetica, sans-serif;
     color: blanchedalmond;
+}
+
+.background_snake{
+    background-image: url("images/snakebg.png");
+    background-repeat: no-repeat;
+    background-size: auto;
+    background-attachment: fixed;  
+    background-position: center; /* Center the image */
+    background-color:#E7FF54 ;
+}
+@media only screen and (max-width: 800px) {
+    .background_snake {
+        background-size: cover;
+    }
+  }
+
+.nobg{
+    background-color:#E7FF54 ;
 }
 
 .logo {
@@ -23,49 +50,107 @@ body {
 	bottom: 10px;  
 }
 
+.gameText{
+    color: black;
+    font-size: 20px;
+    line-height: 30px;
+}
+
+.explantionBox{
+    margin: auto;
+    margin-top: 180px;
+    text-align: center;
+}
+
+#TopLogo{
+    color: black;
+    font-size: 40px;
+    position: fixed;
+    top: 30px;
+    left: 30px;
+
+}
+
+#BottomCopy{
+    color: black;
+    font-size: 15.5px;
+    position: fixed;
+    bottom: 30px;
+    right: 25px;
+    text-align: right;
+}
+
 #bodytext {
-	font-family: 'Sarpanch', Arial, Helvetica, sans-serif;
+    font-family: 'fleuronregular', Arial, Helvetica, sans-serif;
     font-style: normal;
 	font-weight: normal;	
 	font-size: 12px;
     text-align: center;
 }
 
-#playbutton {
-    font-family: 'Sarpanch', Arial, Helvetica, sans-serif;
- 
+#startgame {
+
+    font-family: 'fleuronregular', Arial, Helvetica, sans-serif;
 	font-style: normal;
-	font-weight: bold;	
-	font-size: 15px;
+	font-size: 22px;
 	
-	-webkit-border-radius: 10px;
-	-khtml-border-radius: 10px;	
-	-moz-border-radius: 10px;
-	border-radius: 10px;
+	-webkit-border-radius: 85px;
+	-khtml-border-radius: 85px;	
+	-moz-border-radius: 85px;
+    border-radius: 85px;
+    
+    border: 2px solid #0F0F0F;
+    box-sizing: border-box;
 	
-	background-color:#FE3552;
+	background-color:#ffffff04;
 	
 	color: black;
-	border: 0;
-	padding-left: 40px;
-	padding-right: 40px;
-	padding-top: 10px;
-	padding-bottom: 10px;
+	padding-left: 23px;
+	padding-right:23px;
+	padding-top: 5px;
+	padding-bottom: 5px;
 	text-align: center;
-	text-decoration: none;
   
     margin:0 auto;
-	margin-top: 20px;
-	margin-bottom: 20px;
-    display: block;
+}
+
+#playbutton {
+
+    position: fixed;
+    bottom: 30px;
+    left: 30px;
+
+    font-family: 'fleuronregular', Arial, Helvetica, sans-serif;
+	font-style: normal;
+	font-size: 25px;
+	
+	-webkit-border-radius: 85px;
+	-khtml-border-radius: 85px;	
+	-moz-border-radius: 85px;
+    border-radius: 85px;
+    
+    border: 2px solid #0F0F0F;
+    box-sizing: border-box;
+	
+	background-color:#ffffff04;
+	
+	color: black;
+	padding-left: 23px;
+	padding-right:23px;
+	padding-top: 5px;
+	padding-bottom: 5px;
+	text-align: center;
+  
+    margin:0 auto;
 }
 
 #covidbutton {
-    font-family: 'Sarpanch', Arial, Helvetica, sans-serif;
+    font-family: 'fleuronregular', Arial, Helvetica, sans-serif;
  
 	font-style: normal;
 	font-weight: bold;	
-	font-size: 10px;
+    font-size: 10px;
+
 	
 	-webkit-border-radius: 10px;
 	-khtml-border-radius: 10px;	
@@ -90,32 +175,25 @@ body {
 }
 
 #createbutton {
-    font-family: 'Sarpanch', Arial, Helvetica, sans-serif;
+    font-family: 'fleuronregular', Arial, Helvetica, sans-serif;
+    position: fixed;
+    top: 35px;
+    right: 30px;
+
+    width: 50px;
+    height: 50px;
  
 	font-style: normal;
 	font-weight: bold;	
-	font-size: 10px;
+	font-size: 30px;
 	
-	-webkit-border-radius: 10px;
-	-khtml-border-radius: 10px;	
-	-moz-border-radius: 10px;
-	border-radius: 10px;
-	
-	background-color:#00FFE0;
+
+    border-radius: 50%;
+    border: 2px solid #0F0F0F;
+	background-color:#ffffff04;
 	
 	color: black;
-	border: 0;
-	padding-left: 40px;
-	padding-right: 40px;
-	padding-top: 10px;
-	padding-bottom: 10px;
-	text-align: center;
-	text-decoration: none;
 
-    margin:0 auto;
-	margin-top: 20px;
-	margin-bottom: 20px;
-    display: block;
 }
 
 #stateText {
@@ -138,7 +216,7 @@ body {
 }
 
 #prevbutton {
-    font-family: 'Sarpanch', Arial, Helvetica, sans-serif;
+    font-family: 'fleuronregular', Arial, Helvetica, sans-serif;
  
 	font-style: normal;
 	font-weight: bold;	
@@ -162,7 +240,7 @@ body {
 }
 
 #nextbutton {
-    font-family: 'Sarpanch', Arial, Helvetica, sans-serif;
+    font-family: 'fleuronregular', Arial, Helvetica, sans-serif;
  
 	font-style: normal;
 	font-weight: bold;	
@@ -189,7 +267,7 @@ body {
 }
 
 #homebutton {
-    font-family: 'Sarpanch', Arial, Helvetica, sans-serif;
+    font-family: 'fleuronregular', Arial, Helvetica, sans-serif;
  
 	font-style: normal;
 	font-weight: bold;	

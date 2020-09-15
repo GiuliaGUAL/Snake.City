@@ -14,31 +14,40 @@
 	<script src="/connect.js" defer></script>
 </head>
 
-<body>
+<body class="nobg">
 	<div id="other">
 
-		<img src="logo.png" alt="Snake.City" class="logo">
+		<div id="TopLogo">Snake <br> City</div>
 
+		<form action="create.html">	
+			<button id="createbutton">?</button>  
+		 </form>	
+
+		
+		 <div class="explantionBox">
+		<div class="gameText"> Want to start a new game session? Start here!</div>
+		<br>
+
+		<form action="game">
+			<button id="startgame">START NEW GAME</button>
+		</form>
+		<br>
+		<br>
+
+
+		<div class="gameText">Or select the ongoing session from below to join </div>
+
+			<div id="otherSnake" class="gameText">
+				<p id="snakeId">-There are no snakes to join-</p>
+			</div>
+		</div>
 
 		<div id="bodytext">
 
-			We are living in unprecedented times. The team behind this website would like you to read these important
-			words first.
 
-			<form action="covid.html">
-				<button id="covidbutton">COVID AND SNAKERS</button>
-			</form>
+		
 
-			Select the button below if you want to make a new snake. You will have to tell people your snake name and
-			password.
 
-			<form action="game">
-				<button id="createbutton">START NEW SNAKE</button>
-			</form>
-
-			<div id="otherSnake">
-				<p id="snakeId">There are no snakes to join.</p>
-			</div>
 
 			<script>
 
