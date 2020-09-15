@@ -1,8 +1,8 @@
 
 @font-face {
     font-family: 'fleuronregular';
-    src: url('fonts/fleuronregular-webfont.woff2') format('woff2'),
-         url('fonts/fleuronregular-webfont.woff') format('woff');
+    src: url('fleuronregular-webfont.woff2') format('woff2'),
+         url('fleuronregular-webfont.woff') format('woff');
     font-weight: normal;
     font-style: normal;
 }
@@ -28,7 +28,7 @@ body {
 }
 
 .background_snake{
-    background-image: url("images/snakebg.png");
+    background-image: url("snakebg.png");
     background-repeat: no-repeat;
     background-size: auto;
     background-attachment: fixed;  
@@ -78,6 +78,7 @@ body {
     bottom: 30px;
     right: 25px;
     text-align: right;
+    line-height: 19px;
 }
 
 #bodytext {
