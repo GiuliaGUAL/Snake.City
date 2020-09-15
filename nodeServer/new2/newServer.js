@@ -57,11 +57,11 @@ function padToFour(number) {
   return number;
 }
 
-var snakeColours = [ "Blue", "Red", "Black", "Yellow", "White", "Grey", "Purple", "Brown" ];
+var snakeColours = [ "Blue", "Red", "Black", "Yellow", "White", "Grey", "Purple", "Brown", "Orange", "Green", "Brown", "Sandy", "Turquoise" ];
 
 var snakeNames = [ "Mamba", "Cobra", "Asp", "Adder", "Krait", "Grass snake",
 				   "Corn", "Boa", "Copperhead", "Reef snake", "Sand adder",
-				   "Puff adder", "Anaconda", "Bird snake"
+				   "Puff adder", "Anaconda", "Bird snake", "Viper"
 				   ];
 
 // We could just use any unique ID for the snake - but that would be boring
@@ -80,7 +80,8 @@ function createNewSnakeID()
 	
 	var snake = { snakeUuid : uuid(),
 				  snakeName : snakeColour + " " + snakeName,
-				  snakePassword : pass};
+				  snakePassword : pass,
+				  numPlayers : 1};
 	return snake;
 }
 
@@ -108,6 +109,7 @@ function sendListOfSnakes( connection )
 	
 			if( snake.snakeUuid == uniqueSnake )
 			{
+				snake.numPlayers = getPlayersInSnake( snake );
 				uniqueSnakes.push( snake );
 				break;
 			}		
@@ -424,6 +426,21 @@ app.get('/game.css', (req, res) =>
 app.get('/logo.png', (req, res) =>
 {
 	res.sendFile(__dirname + '/logo.png');
+});
+
+app.get('/snakebg.png', (req, res) =>
+{
+	res.sendFile(__dirname + '/snakebg.png');
+});
+
+app.get('/fleuronregular-webfont.woff', (req, res) =>
+{
+	res.sendFile(__dirname + '/fleuronregular-webfont.woff');
+});
+
+app.get('/fleuronregular-webfont.woff2', (req, res) =>
+{
+	res.sendFile(__dirname + '/fleuronregular-webfont.woff2');
 });
 
 app.get('/game/:id/:password', function (req, res, next) {
