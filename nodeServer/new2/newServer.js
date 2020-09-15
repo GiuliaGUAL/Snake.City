@@ -393,6 +393,11 @@ app.get('/stopwatch.js', (req, res) =>
 	res.sendFile(__dirname + '/stopwatch.js');
 });
 
+app.get('/snakebg.png', (req, res) =>
+{
+	res.sendFile(__dirname + '/snakebg.png');
+});
+
 app.get('/connect.js', (req, res) =>
 {
 	if (fs.existsSync(__dirname + '/connectLocalHost.js'))
