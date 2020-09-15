@@ -29,7 +29,7 @@ let B_pressed = false;
 const buttonA = document.getElementById("buttonA");
 const buttonB = document.getElementById("buttonB");
 const rectangle = document.getElementById("rectangle");
-const debugText = document.getElementById("debugText");
+// const debugText = document.getElementById("debugText");
 const stateText = document.getElementById("stateText");
 const phoneNumText = document.getElementById("phoneNum");
 const instructionText = document.getElementById("instruction");
@@ -202,12 +202,14 @@ function updatePlayers(object) {
     rectangle.style.backgroundColor = `hsl(${colorchange},80%,50%)`;
 	if( numPlayers == 1 )
 	{
-		phoneNum.innerHTML = snakeName + " is " + numPlayers + " player long. Use password: " + snakePass;
+		phoneNum.innerHTML = snakeName + " is " + numPlayers + " player long";
 	}
 	else
 	{
-		phoneNum.innerHTML = snakeName + " is " + numPlayers + " players long. Use password: " + snakePass;
-	}
+		phoneNum.innerHTML = snakeName + " is " + numPlayers + " players long";
+    }
+    stateText.innerHTML = "Password: " + snakePass;
+
 }
 
 function renderGame(state) {
@@ -251,7 +253,7 @@ function renderGame(state) {
         default:
         // code block
     }
-    debugText.innerHTML = "currentBUTTON: " + currentBUTTON;
-    stateText.innerHTML = "currentSTATE: " + currentSTATE;
+    // debugText.innerHTML = "currentBUTTON: " + currentBUTTON;
+    
 }
 
