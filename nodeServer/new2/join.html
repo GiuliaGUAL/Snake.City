@@ -17,7 +17,11 @@
 <body class="nobg">
 	<div id="other">
 
-		<div id="TopLogo">Snake <br> City</div>
+		<div id="TopLogo">
+			<a id="TopLogo" href="http://snake.city">
+				Snake <br> City
+			</a>
+		</div>
 
 		<form action="create.html">	
 			<button id="createbutton">?</button>  
@@ -25,7 +29,13 @@
 
 		
 		 <div class="explantionBox">
-		<div class="gameText"> Want to start a new game session? Start here!</div>
+		<div class="gameText"> 
+			1. Hold a phone together
+			<br>
+			2. Stay connected!
+			<br>
+			3. Invite more people to join.
+		</div>
 		<br>
 
 		<form action="game">
@@ -35,10 +45,10 @@
 		<br>
 
 
-		<div class="gameText">Or select the ongoing session from below to join </div>
+		<div class="gameText">Or join the ongoing session from below. Type in the 4 digit password shown on other people's screen.</div>
 
 			<div id="otherSnake" class="gameText">
-				<p id="snakeId">-There are no snakes to join-</p>
+				<p id="snakeId">-There are no games to join-</p>
 			</div>
 		</div>
 
@@ -66,6 +76,12 @@
 
 						var snakes = Object.entries(JSON.parse(e.data));
 
+						if(snakes.length >= 1){
+							x.innerText = "__";
+						}else{
+							x.innerText = "There are no games to join";
+						}
+
 						for (let [key, value] of snakes) {
 							//Get name of the snake
 							let snakeNames = value["snakeName"];
@@ -90,7 +106,6 @@
 							let element = document.getElementById("otherSnake");
 							element.appendChild(snakeJoin);
 						}
-						x.innerText = "Click on the snake to join";
 					}
 
 				};
@@ -113,15 +128,7 @@
 </body>
 
 <style>
-    #snakeid {
-      color: white;
-      padding: 10px;
-	  margin-bottom: 10px;
-	  border: 1px solid white;
-	  border-radius: 15px;
-      text-align: center;
-      cursor: pointer;
-    }
+
 </style>
 
 </html>

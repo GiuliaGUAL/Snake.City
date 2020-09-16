@@ -2,16 +2,23 @@
 @font-face {
     font-family: 'fleuronregular';
     src: url('fleuronregular-webfont.woff2') format('woff2'),
-         url('fleuronregular-webfont.woff') format('woff');
+         url('fleuronregular-webfont.woff') format('woff'),
+         url('fleuronregular-ios.ttf')  format('truetype');
     font-weight: normal;
     font-style: normal;
+}
+
+a{
+    color: black;
+    text-decoration:underline;
+    text-decoration-color:black;
 }
 
 body {
 	width: 80%;
     margin: auto;
-	margin-top: 10%;
-
+    margin-top: 10%;
+    overflow: hidden;
 
     -webkit-user-select: none;
     /* Chrome all / Safari all */
@@ -21,10 +28,16 @@ body {
     /* IE 10+ */
     user-select: none;
     /* Likely future */
-    overflow: hidden;
     background-color: black;
     font-family: 'fleuronregular', Arial, Helvetica, sans-serif;
     color: blanchedalmond;
+}
+
+h1{
+    color: black;
+    font-style: normal;
+    font-size: 27px;
+    margin-top: 40px;
 }
 
 .background_snake{
@@ -42,7 +55,8 @@ body {
   }
 
 .nobg{
-    background-color:#E7FF54 ;
+    overflow: scroll;
+    background-color:#E7FF54;
 }
 
 .logo {
@@ -52,23 +66,32 @@ body {
 
 .gameText{
     color: black;
-    font-size: 20px;
+    font-size: 18px;
     line-height: 30px;
 }
 
 .explantionBox{
     margin: auto;
-    margin-top: 180px;
+    margin-top: 140px;
     text-align: center;
 }
 
 #TopLogo{
+    text-decoration: none !important;
     color: black;
-    font-size: 40px;
+    font-size: 37px;
     position: fixed;
     top: 30px;
     left: 30px;
+}
 
+#TopBack{
+    text-decoration: none !important;
+    color: black;
+    font-size: 60px;
+    position: fixed;
+    top: 10px;
+    left: 30px;
 }
 
 #BottomCopy{
@@ -196,6 +219,35 @@ body {
 	color: black;
 
 }
+
+#snakeid {
+
+    font-family: 'fleuronregular', Arial, Helvetica, sans-serif;
+	font-style: normal;
+	font-size: 25px;
+	
+	-webkit-border-radius: 85px;
+	-khtml-border-radius: 85px;	
+	-moz-border-radius: 85px;
+    border-radius: 85px;
+    
+    border: 2px solid #0F0F0F;
+    box-sizing: border-box;
+	
+	background-color:#ffffff04;
+	
+	color: black;
+	padding-left: 23px;
+	padding-right:23px;
+	padding-top: 5px;
+	padding-bottom: 5px;
+	text-align: center;
+  
+    margin:0 auto;
+
+    text-align: center;
+    cursor: pointer;
+  }
 
 #stateText {
     position: fixed;

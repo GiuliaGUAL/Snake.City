@@ -433,12 +433,22 @@ app.get('/snakebg.png', (req, res) =>
 	res.sendFile(__dirname + '/snakebg.png');
 });
 
+app.get('/eulogo.png', (req, res) =>
+{
+	res.sendFile(__dirname + '/snakebg.png');
+});
+
 app.get('/fleuronregular-webfont.woff', (req, res) =>
 {
 	res.sendFile(__dirname + '/fleuronregular-webfont.woff');
 });
 
 app.get('/fleuronregular-webfont.woff2', (req, res) =>
+{
+	res.sendFile(__dirname + '/fleuronregular-webfont.woff2');
+});
+
+app.get('/fleuronregular-ios.ttf', (req, res) =>
 {
 	res.sendFile(__dirname + '/fleuronregular-webfont.woff2');
 });
