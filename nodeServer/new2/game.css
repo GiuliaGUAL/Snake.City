@@ -33,7 +33,7 @@ body {
     color: blanchedalmond;
 }
 
-h1{
+h2{
     color: black;
     font-style: normal;
     font-size: 27px;
@@ -209,9 +209,10 @@ h1{
  
 	font-style: normal;
 	font-weight: bold;	
-	font-size: 30px;
+    font-size: 30px;
+    
+    padding: 0; 
 	
-
     border-radius: 50%;
     border: 2px solid #0F0F0F;
 	background-color:#ffffff04;
@@ -244,6 +245,7 @@ h1{
 	text-align: center;
   
     margin:0 auto;
+    margin-bottom: 25px;
 
     text-align: center;
     cursor: pointer;

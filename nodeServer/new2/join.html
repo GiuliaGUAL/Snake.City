@@ -77,7 +77,7 @@
 						var snakes = Object.entries(JSON.parse(e.data));
 
 						if(snakes.length >= 1){
-							x.innerText = "__";
+							x.innerText = "";
 						}else{
 							x.innerText = "There are no games to join";
 						}
@@ -94,7 +94,7 @@
 							snakeJoin.setAttribute("id", "snakeid");
 
 							//Assign Name to the newly created div element
-							let nameHTML = document.createTextNode(snakeNames + " - Number of players : " + playerNumber);
+							let nameHTML = document.createTextNode(snakeNames + " - Players : " + playerNumber);
 							snakeJoin.appendChild(nameHTML);
 
 							//attach function that activates on click

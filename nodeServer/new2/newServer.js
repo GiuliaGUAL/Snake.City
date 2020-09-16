@@ -435,7 +435,7 @@ app.get('/snakebg.png', (req, res) =>
 
 app.get('/eulogo.png', (req, res) =>
 {
-	res.sendFile(__dirname + '/snakebg.png');
+	res.sendFile(__dirname + '/eulogo.png');
 });
 
 app.get('/fleuronregular-webfont.woff', (req, res) =>
@@ -450,7 +450,7 @@ app.get('/fleuronregular-webfont.woff2', (req, res) =>
 
 app.get('/fleuronregular-ios.ttf', (req, res) =>
 {
-	res.sendFile(__dirname + '/fleuronregular-webfont.woff2');
+	res.sendFile(__dirname + '/fleuronregular-ios.ttf');
 });
 
 app.get('/game/:id/:password', function (req, res, next) {
