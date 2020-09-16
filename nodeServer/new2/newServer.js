@@ -438,6 +438,11 @@ app.get('/eulogo.png', (req, res) =>
 	res.sendFile(__dirname + '/eulogo.png');
 });
 
+app.get('/snakeOGP.png', (req, res) =>
+{
+	res.sendFile(__dirname + '/snakeOGP.png');
+});
+
 app.get('/fleuronregular-webfont.woff', (req, res) =>
 {
 	res.sendFile(__dirname + '/fleuronregular-webfont.woff');
