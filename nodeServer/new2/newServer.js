@@ -393,11 +393,6 @@ app.get('/stopwatch.js', (req, res) =>
 	res.sendFile(__dirname + '/stopwatch.js');
 });
 
-app.get('/snakebg.png', (req, res) =>
-{
-	res.sendFile(__dirname + '/snakebg.png');
-});
-
 app.get('/connect.js', (req, res) =>
 {
 	if (fs.existsSync(__dirname + '/connectLocalHost.js'))
@@ -433,6 +428,36 @@ app.get('/logo.png', (req, res) =>
 	res.sendFile(__dirname + '/logo.png');
 });
 
+app.get('/snakebg.png', (req, res) =>
+{
+	res.sendFile(__dirname + '/snakebg.png');
+});
+
+app.get('/eulogo.png', (req, res) =>
+{
+	res.sendFile(__dirname + '/eulogo.png');
+});
+
+app.get('/snakeOGP.png', (req, res) =>
+{
+	res.sendFile(__dirname + '/snakeOGP.png');
+});
+
+app.get('/fleuronregular-webfont.woff', (req, res) =>
+{
+	res.sendFile(__dirname + '/fleuronregular-webfont.woff');
+});
+
+app.get('/fleuronregular-webfont.woff2', (req, res) =>
+{
+	res.sendFile(__dirname + '/fleuronregular-webfont.woff2');
+});
+
+app.get('/fleuronregular-ios.ttf', (req, res) =>
+{
+	res.sendFile(__dirname + '/fleuronregular-ios.ttf');
+});
+
 app.get('/game/:id/:password', function (req, res, next) {
 	
 	console.log('Join snake\nRequest URL:' + req.originalUrl);
@@ -466,5 +491,6 @@ app.get('/join.html', (req, res) =>
 {
 	res.sendFile(__dirname + '/join.html');
 });
+
 
 server.listen(80);

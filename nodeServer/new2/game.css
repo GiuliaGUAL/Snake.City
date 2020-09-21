@@ -1,8 +1,24 @@
+
+@font-face {
+    font-family: 'fleuronregular';
+    src: url('fleuronregular-webfont.woff2') format('woff2'),
+         url('fleuronregular-webfont.woff') format('woff'),
+         url('fleuronregular-ios.ttf')  format('truetype');
+    font-weight: normal;
+    font-style: normal;
+}
+
+a{
+    color: black;
+    text-decoration:underline;
+    text-decoration-color:black;
+}
+
 body {
 	width: 80%;
     margin: auto;
-	margin-top: 10%;
-
+    margin-top: 10%;
+    overflow: hidden;
 
     -webkit-user-select: none;
     /* Chrome all / Safari all */
@@ -12,10 +28,35 @@ body {
     /* IE 10+ */
     user-select: none;
     /* Likely future */
-    overflow: hidden;
     background-color: black;
-    font-family: 'Sarpanch', 'Lato', Arial, Helvetica, sans-serif;
+    font-family: 'fleuronregular', Arial, Helvetica, sans-serif;
     color: blanchedalmond;
+}
+
+h2{
+    color: black;
+    font-style: normal;
+    font-size: 27px;
+    margin-top: 40px;
+}
+
+.background_snake{
+    background-image: url("snakebg.png");
+    background-repeat: no-repeat;
+    background-size: auto;
+    background-attachment: fixed;  
+    background-position: center; /* Center the image */
+    background-color:#E7FF54 ;
+}
+@media only screen and (max-width: 800px) {
+    .background_snake {
+        background-size: cover;
+    }
+  }
+
+.nobg{
+    overflow: scroll;
+    background-color:#E7FF54;
 }
 
 .logo {
@@ -23,49 +64,117 @@ body {
 	bottom: 10px;  
 }
 
+.gameText{
+    color: black;
+    font-size: 18px;
+    line-height: 30px;
+}
+
+.explantionBox{
+    margin: auto;
+    margin-top: 140px;
+    text-align: center;
+}
+
+#TopLogo{
+    text-decoration: none !important;
+    color: black;
+    font-size: 37px;
+    position: fixed;
+    top: 30px;
+    left: 30px;
+}
+
+#TopBack{
+    text-decoration: none !important;
+    color: black;
+    font-size: 60px;
+    position: fixed;
+    top: 10px;
+    left: 30px;
+}
+
+#BottomCopy{
+    color: black;
+    font-size: 15.5px;
+    position: fixed;
+    bottom: 30px;
+    right: 25px;
+    text-align: right;
+    line-height: 19px;
+}
+
 #bodytext {
-	font-family: 'Sarpanch', Arial, Helvetica, sans-serif;
+    font-family: 'fleuronregular', Arial, Helvetica, sans-serif;
     font-style: normal;
 	font-weight: normal;	
 	font-size: 12px;
     text-align: center;
 }
 
-#playbutton {
-    font-family: 'Sarpanch', Arial, Helvetica, sans-serif;
- 
+#startgame {
+
+    font-family: 'fleuronregular', Arial, Helvetica, sans-serif;
 	font-style: normal;
-	font-weight: bold;	
-	font-size: 15px;
+	font-size: 22px;
 	
-	-webkit-border-radius: 10px;
-	-khtml-border-radius: 10px;	
-	-moz-border-radius: 10px;
-	border-radius: 10px;
+	-webkit-border-radius: 85px;
+	-khtml-border-radius: 85px;	
+	-moz-border-radius: 85px;
+    border-radius: 85px;
+    
+    border: 2px solid #0F0F0F;
+    box-sizing: border-box;
 	
-	background-color:#FE3552;
+	background-color:#ffffff04;
 	
 	color: black;
-	border: 0;
-	padding-left: 40px;
-	padding-right: 40px;
-	padding-top: 10px;
-	padding-bottom: 10px;
+	padding-left: 23px;
+	padding-right:23px;
+	padding-top: 5px;
+	padding-bottom: 5px;
 	text-align: center;
-	text-decoration: none;
   
     margin:0 auto;
-	margin-top: 20px;
-	margin-bottom: 20px;
-    display: block;
+}
+
+#playbutton {
+
+    position: fixed;
+    bottom: 30px;
+    left: 30px;
+
+    font-family: 'fleuronregular', Arial, Helvetica, sans-serif;
+	font-style: normal;
+	font-size: 25px;
+	
+	-webkit-border-radius: 85px;
+	-khtml-border-radius: 85px;	
+	-moz-border-radius: 85px;
+    border-radius: 85px;
+    
+    border: 2px solid #0F0F0F;
+    box-sizing: border-box;
+	
+	background-color:#ffffff04;
+	
+	color: black;
+	padding-left: 23px;
+	padding-right:23px;
+	padding-top: 5px;
+	padding-bottom: 5px;
+	text-align: center;
+  
+    margin:0 auto;
 }
 
 #covidbutton {
-    font-family: 'Sarpanch', Arial, Helvetica, sans-serif;
+    font-family: 'fleuronregular', Arial, Helvetica, sans-serif;
  
 	font-style: normal;
 	font-weight: bold;	
-	font-size: 10px;
+    font-size: 10px;
+
 	
 	-webkit-border-radius: 10px;
 	-khtml-border-radius: 10px;	
@@ -90,42 +199,67 @@ body {
 }
 
 #createbutton {
-    font-family: 'Sarpanch', Arial, Helvetica, sans-serif;
+    font-family: 'fleuronregular', Arial, Helvetica, sans-serif;
+    position: fixed;
+    top: 35px;
+    right: 30px;
+
+    width: 50px;
+    height: 50px;
  
 	font-style: normal;
 	font-weight: bold;	
-	font-size: 10px;
+    font-size: 30px;
+    
+    padding: 0; 
 	
-	-webkit-border-radius: 10px;
-	-khtml-border-radius: 10px;	
-	-moz-border-radius: 10px;
-	border-radius: 10px;
-	
-	background-color:#00FFE0;
+    border-radius: 50%;
+    border: 2px solid #0F0F0F;
+	background-color:#ffffff04;
 	
 	color: black;
-	border: 0;
-	padding-left: 40px;
-	padding-right: 40px;
-	padding-top: 10px;
-	padding-bottom: 10px;
-	text-align: center;
-	text-decoration: none;
 
-    margin:0 auto;
-	margin-top: 20px;
-	margin-bottom: 20px;
-    display: block;
 }
+
+#snakeid {
+
+    font-family: 'fleuronregular', Arial, Helvetica, sans-serif;
+	font-style: normal;
+	font-size: 25px;
+	
+	-webkit-border-radius: 85px;
+	-khtml-border-radius: 85px;	
+	-moz-border-radius: 85px;
+    border-radius: 85px;
+    
+    border: 2px solid #0F0F0F;
+    box-sizing: border-box;
+	
+	background-color:#ffffff04;
+	
+	color: black;
+	padding-left: 23px;
+	padding-right:23px;
+	padding-top: 5px;
+	padding-bottom: 5px;
+	text-align: center;
+  
+    margin:0 auto;
+    margin-bottom: 25px;
+
+    text-align: center;
+    cursor: pointer;
+  }
 
 #stateText {
     position: fixed;
-    bottom: 0%;
-    right: 0%;
-    padding-right: 20px;
-    padding-bottom: 20px;
+    bottom: 0px;
+    right: 0px;
+    padding-right: 9px;
+    padding-bottom: 15px;
     writing-mode: vertical-rl;
     text-orientation: mixed;
+    z-index: 2;
 }
 
 .btn-group button {
@@ -137,7 +271,7 @@ body {
 }
 
 #prevbutton {
-    font-family: 'Sarpanch', Arial, Helvetica, sans-serif;
+    font-family: 'fleuronregular', Arial, Helvetica, sans-serif;
  
 	font-style: normal;
 	font-weight: bold;	
@@ -161,7 +295,7 @@ body {
 }
 
 #nextbutton {
-    font-family: 'Sarpanch', Arial, Helvetica, sans-serif;
+    font-family: 'fleuronregular', Arial, Helvetica, sans-serif;
  
 	font-style: normal;
 	font-weight: bold;	
@@ -188,7 +322,7 @@ body {
 }
 
 #homebutton {
-    font-family: 'Sarpanch', Arial, Helvetica, sans-serif;
+    font-family: 'fleuronregular', Arial, Helvetica, sans-serif;
  
 	font-style: normal;
 	font-weight: bold;	
@@ -255,12 +389,14 @@ body {
 
 #phoneNum {
     position: fixed;
-    top: 0%;
-    left: 0%;
-    padding-left: 20px;
-    padding-top: 20px;
+    top: 0px;
+    left: 0px;
+    padding-left: 7px;
+    padding-top: 7px;
     writing-mode: vertical-rl;
     text-orientation: mixed;
+    z-index: 2;
+
 }
 
 /* The ellipse button */
@@ -274,6 +410,7 @@ body {
     transform: translate(-50%, -50%);
     border-radius: 50%;
     opacity: 0.8;
+    z-index: 1;
     transition: opacity 0.2s;
     transition: background-color 0.9s;
     transition: width 0.2s;
@@ -287,6 +424,7 @@ body {
     left: 50%;
     transform: translate(-50%, 50%);
     border-radius: 50%;
+    z-index: 1;
     opacity: 0.8;
     transition: opacity 0.2s;
     transition: background-color 0.9s;
@@ -306,7 +444,7 @@ body {
     height: 100%;
     left: 50%;
     transform: translate(-50%, 0%);
-    z-index: -100;
+    z-index: -200;
     opacity: 0;
     transition: background-color 0.9s;
     opacity: 0.5s;
